@@ -3,14 +3,15 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_select_level"
+            android:icon="@drawable/ic_star"
+            android:visible="true"
+            android:title="Start Game" />
+
+        <item
             android:id="@+id/nav_scores"
             android:icon="@drawable/ic_action_achievement"
             android:title="High Scores" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:visible="false"
-            android:title="Gallery" />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
