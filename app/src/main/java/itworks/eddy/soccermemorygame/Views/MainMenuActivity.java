@@ -36,6 +36,7 @@ public class MainMenuActivity extends AppCompatActivity
     NavigationView navigationView;
     @Bind(R.id.drawer_layout)
     DrawerLayout drawer;
+    Menu navMenu;
     Boolean isPlaying;
 
     @Override
@@ -66,6 +67,9 @@ public class MainMenuActivity extends AppCompatActivity
                 beginTransaction().
                 add(R.id.contentLayout, new SelectLevelFragment()).
                 commit();
+        navMenu = navigationView.getMenu();
+        navMenu.findItem(R.id.nav_select_level).setVisible(false);
+
         //init sound
         soundPlayer = MediaPlayer.create(this, R.raw.wayne_kinos_01_progressions_intro);
         soundPlayer.start();
@@ -87,7 +91,6 @@ public class MainMenuActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
-
         return true;
     }
 
@@ -110,20 +113,21 @@ public class MainMenuActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        //// TODO: 03/05/2016 hide select level item when in corresponding fragment
-        //View v = findViewById(R.id.nav_select_level);
-        //Log.d("visibility->>>", new Integer(v.getVisibility()).toString());
-        //v.setVisibility(View.INVISIBLE);
-        //v.setVisibility(View.VISIBLE);
+        navMenu.findItem(R.id.nav_select_level).setVisible(true);
         if (id == R.id.nav_select_level) {
-            //v.setVisibility(View.INVISIBLE);
+            toolbar.setTitle(R.string.app_name);
+            navMenu.findItem(R.id.nav_select_level).setVisible(false);
             getSupportFragmentManager().
                     beginTransaction().
                     replace(R.id.contentLayout, new SelectLevelFragment()).
                     commit();
         } else if (id == R.id.nav_scores) {
             //// TODO: 01/05/2016 high scores fragment (Recycler view)
+            toolbar.setTitle("High Scores");
         } else if (id == R.id.nav_settings) {
+            //setSupportActionBar(toolbar);
+            //getSupportActionBar().setTitle("Settings");
+            toolbar.setTitle("Settings");
             getSupportFragmentManager().
                     beginTransaction().
                     replace(R.id.contentLayout, new SettingsFragment()).
@@ -140,6 +144,7 @@ public class MainMenuActivity extends AppCompatActivity
                 soundPlayer.start();
                 isPlaying = soundPlayer.isPlaying();
             }
+            toolbar.setTitle("About");
             getSupportFragmentManager().
                     beginTransaction().
                     replace(R.id.contentLayout, new AboutFragment()).
