@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
+import android.media.AsyncPlayer;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -27,7 +30,7 @@ import itworks.eddy.soccermemorygame.R;
 public class MainMenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    MediaPlayer soundPlayer;
+    BackgroundMusic backgroundMusic = new BackgroundMusic("Background Music");
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.fab)
@@ -37,6 +40,8 @@ public class MainMenuActivity extends AppCompatActivity
     @Bind(R.id.drawer_layout)
     DrawerLayout drawer;
     Menu navMenu;
+    String resourcePath;
+    Uri musicUri;
     Boolean isPlaying;
 
     @Override
@@ -45,9 +50,7 @@ public class MainMenuActivity extends AppCompatActivity
         this.overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
         setContentView(R.layout.activity_main_menu);
         ButterKnife.bind(this);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,12 +59,10 @@ public class MainMenuActivity extends AppCompatActivity
             }
         });
         fab.hide();
-        //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-        //NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         getSupportFragmentManager().
                 beginTransaction().
@@ -69,11 +70,26 @@ public class MainMenuActivity extends AppCompatActivity
                 commit();
         navMenu = navigationView.getMenu();
         navMenu.findItem(R.id.nav_select_level).setVisible(false);
+        //init music
+        resourcePath = "android.resource://" + getPackageName() + "/";
+        musicUri = Uri.parse(resourcePath + R.raw.wayne_kinos_01_progressions_intro);
+        //backgroundMusic.execute();
+        backgroundMusic.play(getApplicationContext(), musicUri, true, AudioManager.STREAM_MUSIC);
+        isPlaying = true;
+    }
 
-        //init sound
-        soundPlayer = MediaPlayer.create(this, R.raw.wayne_kinos_01_progressions_intro);
-        soundPlayer.start();
-        isPlaying = soundPlayer.isPlaying();
+    @Override
+    protected void onPostResume() {
+        Log.d("onPostResume", "!");
+        backgroundMusic.play(getApplicationContext(), musicUri, true, AudioManager.STREAM_MUSIC);
+        super.onPostResume();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d("Pause", "!");
+        backgroundMusic.stop();
+        super.onPause();
     }
 
     @Override
@@ -125,25 +141,12 @@ public class MainMenuActivity extends AppCompatActivity
             //// TODO: 01/05/2016 high scores fragment (Recycler view)
             toolbar.setTitle("High Scores");
         } else if (id == R.id.nav_settings) {
-            //setSupportActionBar(toolbar);
-            //getSupportActionBar().setTitle("Settings");
             toolbar.setTitle("Settings");
             getSupportFragmentManager().
                     beginTransaction().
                     replace(R.id.contentLayout, new SettingsFragment()).
                     commit();
         } else if (id == R.id.nav_about) {
-            if (isPlaying) {
-                soundPlayer.stop();
-                isPlaying = soundPlayer.isPlaying();
-                soundPlayer.reset();
-                soundPlayer.release();
-            }
-            else {
-                soundPlayer = MediaPlayer.create(this, R.raw.wayne_kinos_01_progressions_intro);
-                soundPlayer.start();
-                isPlaying = soundPlayer.isPlaying();
-            }
             toolbar.setTitle("About");
             getSupportFragmentManager().
                     beginTransaction().
@@ -186,4 +189,36 @@ public class MainMenuActivity extends AppCompatActivity
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+    public class BackgroundMusic extends AsyncPlayer{
+        @Override
+        public void play(Context context, Uri uri, boolean looping, AudioAttributes attributes) throws IllegalArgumentException {
+            super.play(context, uri, looping, attributes);
+        }
+
+        public BackgroundMusic(String tag) {
+            super(tag);
+        }
+
+        @Override
+        public void stop() {
+            super.stop();
+        }
+    }
+
+    /*public class BackgroundMusic extends AsyncTask {
+
+        MediaPlayer soundPlayer;
+        @Override
+        protected Object doInBackground(Object[] params) {
+            soundPlayer = MediaPlayer.create(MainMenuActivity.this, R.raw.wayne_kinos_01_progressions_intro);
+            soundPlayer.setLooping(true);
+            soundPlayer.start();
+            return null;
+        }
+
+        public void pause(){
+            soundPlayer.pause();
+        }
+    }*/
 }
