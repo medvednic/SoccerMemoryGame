@@ -3,10 +3,8 @@ package itworks.eddy.soccermemorygame.Views;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,8 +34,12 @@ public class SettingsFragment extends Fragment {
     Button btRestartScore;
     @Bind(R.id.btDeleteUser)
     Button btDeleteUser;
-    //BackgroundMusic backgroundMusic;
-    SharedPreferences appPreferences;
+
+    /** SettingsFragment - this is the settings fragment
+     *  the user can control music/sound settings from here
+     *  the user can reset his/her scores
+     *  the user can deactivate the account
+     */
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -49,20 +51,12 @@ public class SettingsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         ButterKnife.bind(this, view);
-        Bundle bundle = this.getArguments();
-        if (bundle != null){
-            switchMusic.setChecked(bundle.getBoolean("music", true));
-        }
-        final AudioManager audioManager = (AudioManager) getContext().getSystemService(getContext().AUDIO_SERVICE);
-        seekBarVolume.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
-        seekBarVolume.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+        initViews();
         seekBarVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
-                Log.d(Integer.toString(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))+" ", Integer.toString(progress));
+                BackgroundMusic.setVolume(progress/100f); //adjust background music volume according to slider
+                saveSettings("volume");
             }
 
             @Override
@@ -79,22 +73,44 @@ public class SettingsFragment extends Fragment {
         switchMusic.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                appPreferences = getActivity().getSharedPreferences("UserData", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = appPreferences.edit();
+                //enable or disable background music
                 if (isChecked) {
-                    BackgroundMusic.initPlayer(getContext(), isChecked);
+                    BackgroundMusic.initPlayer(getContext(), isChecked, BackgroundMusic.getVolume());
                     BackgroundMusic.start();
 
                 }else {
                     BackgroundMusic.releasePlayer();
                 }
-                Log.d("allowed->", String.valueOf(isChecked));
-                editor.putBoolean("music", isChecked);
-                editor.apply();
-
+                seekBarVolume.setEnabled(isChecked);
+                saveSettings("music");
             }
         });
+
         return view;
+    }
+
+    private void initViews() { //init seekbar and switches according to users settings
+        seekBarVolume.setProgress(BackgroundMusic.getVolumeInt());
+        seekBarVolume.setMax(100);
+        if (!BackgroundMusic.isAllowed()){
+            switchMusic.setChecked(false);
+            seekBarVolume.setEnabled(false);
+        }
+    }
+
+    private void saveSettings(String option) { //save user settings to shared preferences
+        SharedPreferences appPreferences = getActivity().getSharedPreferences("UserData", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = appPreferences.edit();
+        switch (option){
+            case "volume":
+                editor.putFloat("volume", BackgroundMusic.getVolume());
+                editor.apply();
+                break;
+            case "music":
+                editor.putBoolean("music", BackgroundMusic.isAllowed());
+                editor.apply();
+                break;
+        }
     }
 
     @Override

@@ -11,7 +11,7 @@ import android.widget.EditText;
  */
 
 /**
- * this class implements TextWatcher interface in order to handle spaces in different EditText views
+ * NoSpaceTextWatcher - this class implements TextWatcher interface in order to handle spaces in different EditText views
  */
 public class NoSpaceTextWatcher implements TextWatcher {
 

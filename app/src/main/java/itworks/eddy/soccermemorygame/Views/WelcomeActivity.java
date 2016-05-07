@@ -31,6 +31,14 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/** WelcomeActivity - this is the first activity that the user sees:
+ *
+ *  1.  shared preferences are accessed in order to check for previous session
+ *  2.  if a previous session was detected, users settings are loaded, otherwise default settings
+ *  3.  login/registration options are presented to the user if no previous session was detected,
+ *      input is validated and then authenticated via the database using asynchronous web access
+ *  4.  in both cases the main menu activity will be launched.
+*/
 public class WelcomeActivity extends AppCompatActivity {
 
     @Bind(R.id.tbUsername)
@@ -51,6 +59,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private String password;
     private String passwordVerify;
     private Boolean musicState;
+    private float volume;
     apiServices api;
     SharedPreferences appPreferences;
 
@@ -87,6 +96,7 @@ public class WelcomeActivity extends AppCompatActivity {
         appPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         username = appPreferences.getString("username", "");
         musicState = appPreferences.getBoolean("music", true);
+        volume = appPreferences.getFloat("volume", 0.75f);
         if (!username.equals("")) {
             Log.d("Logged user-->", username);
             return true;
@@ -123,7 +133,9 @@ public class WelcomeActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } finally {
                     Intent intent = new Intent(WelcomeActivity.this, MainMenuActivity.class);
+                    //pass user settings to intent
                     intent.putExtra("music", musicState);
+                    intent.putExtra("volume", volume);
                     startActivity(intent);
                     finish();
                 }
