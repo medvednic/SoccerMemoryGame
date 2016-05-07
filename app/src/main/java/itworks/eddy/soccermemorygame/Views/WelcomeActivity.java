@@ -50,6 +50,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private String username;
     private String password;
     private String passwordVerify;
+    private Boolean musicState;
     apiServices api;
     SharedPreferences appPreferences;
 
@@ -85,6 +86,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private boolean getLoggedInState() { //check if the user has a session on the client
         appPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         username = appPreferences.getString("username", "");
+        musicState = appPreferences.getBoolean("music", true);
         if (!username.equals("")) {
             Log.d("Logged user-->", username);
             return true;
@@ -121,6 +123,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } finally {
                     Intent intent = new Intent(WelcomeActivity.this, MainMenuActivity.class);
+                    intent.putExtra("music", musicState);
                     startActivity(intent);
                     finish();
                 }

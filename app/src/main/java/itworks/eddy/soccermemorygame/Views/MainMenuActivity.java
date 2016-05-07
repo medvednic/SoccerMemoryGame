@@ -4,14 +4,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.AsyncPlayer;
-import android.media.AudioAttributes;
 import android.media.AudioManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,12 +23,12 @@ import android.view.View;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import itworks.eddy.soccermemorygame.BackgroundMusic;
 import itworks.eddy.soccermemorygame.R;
 
 public class MainMenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    BackgroundMusic backgroundMusic = new BackgroundMusic("Background Music");
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.fab)
@@ -40,9 +38,7 @@ public class MainMenuActivity extends AppCompatActivity
     @Bind(R.id.drawer_layout)
     DrawerLayout drawer;
     Menu navMenu;
-    String resourcePath;
-    Uri musicUri;
-    Boolean isPlaying;
+    Boolean allowMusic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,27 +64,40 @@ public class MainMenuActivity extends AppCompatActivity
                 beginTransaction().
                 add(R.id.contentLayout, new SelectLevelFragment()).
                 commit();
+
         navMenu = navigationView.getMenu();
         navMenu.findItem(R.id.nav_select_level).setVisible(false);
         //init music
-        resourcePath = "android.resource://" + getPackageName() + "/";
-        musicUri = Uri.parse(resourcePath + R.raw.wayne_kinos_01_progressions_intro);
-        //backgroundMusic.execute();
-        backgroundMusic.play(getApplicationContext(), musicUri, true, AudioManager.STREAM_MUSIC);
-        isPlaying = true;
+
+        //resourcePath = "android.resource://" + getPackageName() + "/";
+        //musicUri = Uri.parse(resourcePath + R.raw.wayne_kinos_01_progressions_intro);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC); //is it necessary? need to check how volume change behaves on media player
+        Bundle extras = getIntent().getExtras();
+        if (extras != null){
+            allowMusic = extras.getBoolean("music");
+            Log.d("music-->", String.valueOf(allowMusic));
+        }
+
+        if (allowMusic){
+            Log.d("music started ", "in menu");
+            BackgroundMusic.initPlayer(this, allowMusic);
+            BackgroundMusic.start();
+        }
     }
 
     @Override
     protected void onPostResume() {
-        Log.d("onPostResume", "!");
-        backgroundMusic.play(getApplicationContext(), musicUri, true, AudioManager.STREAM_MUSIC);
+        if (BackgroundMusic.isAllowed()){
+            BackgroundMusic.start();
+        }
         super.onPostResume();
     }
 
     @Override
     protected void onPause() {
-        Log.d("Pause", "!");
-        backgroundMusic.stop();
+        if (BackgroundMusic.isAllowed()){
+            BackgroundMusic.pause();
+        }
         super.onPause();
     }
 
@@ -100,6 +109,9 @@ public class MainMenuActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
             overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+            if (BackgroundMusic.isAllowed()){
+                BackgroundMusic.releasePlayer();
+            }
         }
     }
 
@@ -142,9 +154,13 @@ public class MainMenuActivity extends AppCompatActivity
             toolbar.setTitle("High Scores");
         } else if (id == R.id.nav_settings) {
             toolbar.setTitle("Settings");
+            Fragment settingsFragment = new SettingsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("music", BackgroundMusic.isAllowed());
+            settingsFragment.setArguments(bundle);
             getSupportFragmentManager().
                     beginTransaction().
-                    replace(R.id.contentLayout, new SettingsFragment()).
+                    replace(R.id.contentLayout, settingsFragment).
                     commit();
         } else if (id == R.id.nav_about) {
             toolbar.setTitle("About");
@@ -172,9 +188,8 @@ public class MainMenuActivity extends AppCompatActivity
                 SharedPreferences appPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = appPreferences.edit();
                 editor.remove("username");
+                editor.remove("music");
                 editor.apply();
-                Log.d("logout", "OK");
-                Log.d("SharedPrefers cleared", "key:username");
                 Intent intent = new Intent(MainMenuActivity.this, WelcomeActivity.class);
                 startActivity(intent);
                 finish();
@@ -190,7 +205,7 @@ public class MainMenuActivity extends AppCompatActivity
         dialog.show();
     }
 
-    public class BackgroundMusic extends AsyncPlayer{
+    /*public class BackgroundMusic extends AsyncPlayer{
         @Override
         public void play(Context context, Uri uri, boolean looping, AudioAttributes attributes) throws IllegalArgumentException {
             super.play(context, uri, looping, attributes);
@@ -204,7 +219,7 @@ public class MainMenuActivity extends AppCompatActivity
         public void stop() {
             super.stop();
         }
-    }
+    }*/
 
     /*public class BackgroundMusic extends AsyncTask {
 
