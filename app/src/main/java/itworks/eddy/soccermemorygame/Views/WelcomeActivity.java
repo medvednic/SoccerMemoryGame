@@ -9,8 +9,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
@@ -31,14 +34,15 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/** WelcomeActivity - this is the first activity that the user sees:
- *
- *  1.  shared preferences are accessed in order to check for previous session
- *  2.  if a previous session was detected, users settings are loaded, otherwise default settings
- *  3.  login/registration options are presented to the user if no previous session was detected,
- *      input is validated and then authenticated via the database using asynchronous web access
- *  4.  in both cases the main menu activity will be launched.
-*/
+/**
+ * WelcomeActivity - this is the first activity that the user sees:
+ * <p>
+ * 1.  shared preferences are accessed in order to check for previous session
+ * 2.  if a previous session was detected, users settings are loaded, otherwise default settings
+ * 3.  login/registration options are presented to the user if no previous session was detected,
+ * input is validated and then authenticated via the database using asynchronous web access
+ * 4.  in both cases the main menu activity will be launched.
+ */
 public class WelcomeActivity extends AppCompatActivity {
 
     @Bind(R.id.tbUsername)
@@ -53,6 +57,8 @@ public class WelcomeActivity extends AppCompatActivity {
     EditText tbVerifyPassword;
     @Bind(R.id.btnCancel)
     Button btnCancel;
+    @Bind(R.id.ivLogo)
+    ImageView ivLogo;
     private Boolean isVerified = false;
     private Boolean performRegistration = false;
     private String username;
@@ -122,26 +128,79 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void launchMenu() { //launch the main menu by intent
-        Thread th = new Thread(){
-            public void run(){
+        RotateAnimation rotate = new RotateAnimation(0, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f); //set custom rotation animation
+        rotate.setDuration(1500);
+        //rotate.setInterpolator(new LinearInterpolator());
+        rotate.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                //start main menu activity once the animation ends
+                Intent intent = new Intent(WelcomeActivity.this, MainMenuActivity.class);
+                //pass user settings to intent
+                intent.putExtra("music", musicState);
+                intent.putExtra("volume", volume);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        ivLogo.setAnimation(rotate);
+        ivLogo.startAnimation(rotate);
+        /*Thread th = new Thread() {
+            public void run() {
                 try {
                     long current = System.currentTimeMillis();
-                    while(System.currentTimeMillis() <= current + 2500){
+                    while (System.currentTimeMillis() <= current + 2500) {
                         //do nothing.
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    Intent intent = new Intent(WelcomeActivity.this, MainMenuActivity.class);
-                    //pass user settings to intent
-                    intent.putExtra("music", musicState);
-                    intent.putExtra("volume", volume);
-                    startActivity(intent);
-                    finish();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                            rotate.setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {
+
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    Intent intent = new Intent(WelcomeActivity.this, MainMenuActivity.class);
+                                    //pass user settings to intent
+                                    intent.putExtra("music", musicState);
+                                    intent.putExtra("volume", volume);
+                                    startActivity(intent);
+                                    finish();
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {
+
+                                }
+                            });
+                            rotate.setDuration(2000);
+                            rotate.setInterpolator(new LinearInterpolator());
+                            ivLogo.setAnimation(rotate);
+                            ivLogo.startAnimation(rotate);
+                        }
+                    });
+
                 }
             }
         };
-        th.start();
+        th.start();*/
     }
 
     private boolean verifyInput() { //verify user input in login/registration fields
@@ -181,13 +240,11 @@ public class WelcomeActivity extends AppCompatActivity {
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful()) { //if user was added, login
                     registerDialog();
-                }
-                else {
+                } else {
                     if (response.code() == 400) { //username exists
                         Log.d("username exists", username);
                         Toast.makeText(getApplicationContext(), "Username exists, please enter different username", Toast.LENGTH_SHORT).show();
-                    }
-                    else{ //server returned error
+                    } else { //server returned error
                         String errMsg = response.raw().message();
                         Log.d("Error", errMsg);
                     }
@@ -219,9 +276,8 @@ public class WelcomeActivity extends AppCompatActivity {
                         performLocalLogin();
                         launchMenu();
                     }
-                }
-                else { //server returned error
-                    if (response.code() == 400){ //will return if username exists but password is incorrect
+                } else { //server returned error
+                    if (response.code() == 400) { //will return if username exists but password is incorrect
                         Log.d("wrong password", username);
                         Toast.makeText(getApplicationContext(), "Wrong password", Toast.LENGTH_SHORT).show();
                     }
@@ -232,6 +288,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     SetEditText(true);
                 }
             }
+
             @Override
             public void onFailure(Call<ServerResponse> call, Throwable t) {
 
@@ -258,7 +315,7 @@ public class WelcomeActivity extends AppCompatActivity {
         StringBuffer hexString = new StringBuffer();
         for (int i = 0; i < hash.length; i++) {
             String hex = Integer.toHexString(0xff & hash[i]);
-            if(hex.length() == 1) hexString.append('0');
+            if (hex.length() == 1) hexString.append('0');
             hexString.append(hex);
         }
         password = hexString.toString();
@@ -299,18 +356,18 @@ public class WelcomeActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.btnRegister:
-                    Log.d("Click", "register");
-                    performRegistration = true;
-                    btnLogin.setVisibility(View.INVISIBLE);
-                    btnCancel.setVisibility(View.VISIBLE);
-                    tbVerifyPassword.setVisibility(View.VISIBLE);
-                    if (verifyInput()) {
-                        Log.d("Verified input", "true");
-                        btnRegister.setEnabled(false);
-                        btnCancel.setEnabled(false);
-                        SetEditText(false);
-                        registerUser();
-                    }
+                Log.d("Click", "register");
+                performRegistration = true;
+                btnLogin.setVisibility(View.INVISIBLE);
+                btnCancel.setVisibility(View.VISIBLE);
+                tbVerifyPassword.setVisibility(View.VISIBLE);
+                if (verifyInput()) {
+                    Log.d("Verified input", "true");
+                    btnRegister.setEnabled(false);
+                    btnCancel.setEnabled(false);
+                    SetEditText(false);
+                    registerUser();
+                }
                 break;
             case R.id.btnCancel: //cancel registration - will clear fields and hide them
                 tbUsername.setText("");
