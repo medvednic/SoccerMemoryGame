@@ -57,7 +57,13 @@ public class BackgroundMusic {
     public static void start(){
         Log.d("player is playing", String.valueOf(backgroundPlayer.isPlaying()));
         if (!backgroundPlayer.isPlaying()){
-            backgroundPlayer.start();
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    backgroundPlayer.start();
+                }
+            });
+            t.start();
         }
     }
 

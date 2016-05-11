@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -36,12 +38,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * WelcomeActivity - this is the first activity that the user sees:
- * <p>
- * 1.  shared preferences are accessed in order to check for previous session
- * 2.  if a previous session was detected, users settings are loaded, otherwise default settings
- * 3.  login/registration options are presented to the user if no previous session was detected,
- * input is validated and then authenticated via the database using asynchronous web access
- * 4.  in both cases the main menu activity will be launched.
+ * 1.  if no network connectivity is available - the user is prompted
+ * 2.  shared preferences are accessed in order to check for previous session
+ * 3.  if a previous session was detected, users settings are loaded, otherwise default settings
+ * 4.  login/registration options are presented to the user if no previous session was detected,
+ *     input is validated and then authenticated via the database using asynchronous web access
+ * 5.  in both cases the main menu activity will be launched.
  */
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -82,11 +84,45 @@ public class WelcomeActivity extends AppCompatActivity {
 
         hideLoginOpts();
         apiServiceInit();
+        if (!isNetworkAvailable()){
+            networkDialog();
+        }
         if (!getLoggedInState()) {
             showLoginOpts();
         } else {
             launchMenu();
         }
+
+    }
+
+    private boolean isNetworkAvailable() {//check for network connectivity
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        if (activeNetworkInfo != null){
+            return activeNetworkInfo.isConnected();
+        }
+        return false;
+    }
+
+    private void networkDialog() { //if no connectivity: close or restart app
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Internet connection is unavailable").setTitle("Can't launch game");
+        builder.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        builder.setNegativeButton("Retry", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent); //relaunch current activity
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void apiServiceInit() { //init Retrofit
@@ -155,52 +191,6 @@ public class WelcomeActivity extends AppCompatActivity {
         });
         ivLogo.setAnimation(rotate);
         ivLogo.startAnimation(rotate);
-        /*Thread th = new Thread() {
-            public void run() {
-                try {
-                    long current = System.currentTimeMillis();
-                    while (System.currentTimeMillis() <= current + 2500) {
-                        //do nothing.
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                            rotate.setAnimationListener(new Animation.AnimationListener() {
-                                @Override
-                                public void onAnimationStart(Animation animation) {
-
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animation animation) {
-                                    Intent intent = new Intent(WelcomeActivity.this, MainMenuActivity.class);
-                                    //pass user settings to intent
-                                    intent.putExtra("music", musicState);
-                                    intent.putExtra("volume", volume);
-                                    startActivity(intent);
-                                    finish();
-                                }
-
-                                @Override
-                                public void onAnimationRepeat(Animation animation) {
-
-                                }
-                            });
-                            rotate.setDuration(2000);
-                            rotate.setInterpolator(new LinearInterpolator());
-                            ivLogo.setAnimation(rotate);
-                            ivLogo.startAnimation(rotate);
-                        }
-                    });
-
-                }
-            }
-        };
-        th.start();*/
     }
 
     private boolean verifyInput() { //verify user input in login/registration fields

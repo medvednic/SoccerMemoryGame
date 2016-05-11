@@ -7,11 +7,27 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Select Level..."
-        android:id="@+id/textView3"
-        android:layout_gravity="center_horizontal|top" />
+        android:layout_gravity="center_horizontal|top">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Select Game Difficulty"
+            android:id="@+id/textView3"
+            android:layout_gravity="center_horizontal|top" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Level 1"
+            android:id="@+id/btnLvl1"
+            android:layout_gravity="center_horizontal|top" />
+
+    </LinearLayout>
+
 </FrameLayout>
