@@ -14,19 +14,10 @@ public class Card {
     public Card(ImageView view, int resource) {
         this.view = view;
         this.resource = resource;
-        view.setOnClickListener(new CardOnclickListener(resource));
-    }
-
-    public void setView(ImageView view) {
-        this.view = view;
-    }
-
-    public void setResource(int resource) {
-        this.resource = resource;
+        view.setOnClickListener(new CardOnclickListener(this));
     }
 
     public ImageView getView() {
-
         return view;
     }
 

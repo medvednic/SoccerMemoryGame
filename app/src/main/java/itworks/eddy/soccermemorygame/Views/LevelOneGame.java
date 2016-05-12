@@ -1,8 +1,9 @@
 package itworks.eddy.soccermemorygame.Views;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -10,9 +11,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import itworks.eddy.soccermemorygame.BackgroundMusic;
-import itworks.eddy.soccermemorygame.CardOnclickListener;
 import itworks.eddy.soccermemorygame.GameLogic;
 import itworks.eddy.soccermemorygame.R;
 
@@ -26,7 +25,6 @@ public class LevelOneGame extends AppCompatActivity {
     ImageView ivCard2;
     @Bind(R.id.ivCard3)
     ImageView ivCard3;
-    private int boardSize = 4;
     List<ImageView> ivCards = new ArrayList<>();
     private int [] resources = {R.drawable.animal, R.drawable.fish};
 
@@ -34,13 +32,13 @@ public class LevelOneGame extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_level_one_game);
+        this.overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
         ButterKnife.bind(this);
-        CardOnclickListener.setContext(getApplicationContext());
         if (BackgroundMusic.isAllowed()) {
             BackgroundMusic.start(); //resume music
         }
         initIvCardList();
-        GameLogic.initCards(ivCards, resources);
+        GameLogic.initCards(ivCards, resources, getApplicationContext());
     }
 
     private void initIvCardList() {
@@ -60,9 +58,8 @@ public class LevelOneGame extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        GameLogic.clear();
-        finish();
-        super.onBackPressed();
+        this.overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+        displayBackDialog();
     }
 
     @Override
@@ -73,13 +70,19 @@ public class LevelOneGame extends AppCompatActivity {
         super.onPostResume();
     }
 
-    @OnClick({R.id.ivCard0, R.id.ivCard1})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.ivCard0:
-                break;
-            case R.id.ivCard1:
-                break;
-        }
+    private void displayBackDialog() {
+        //display back to main menu dialog
+        new AlertDialog.Builder(this)
+                .setTitle("Back to main menu")
+                .setMessage("Are you sure?")
+                .setNegativeButton("Stay in game", null)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        GameLogic.clear();
+                        //finish(); //is necessary?
+                        LevelOneGame.super.onBackPressed();
+                    }
+                }).create().show();
     }
 }

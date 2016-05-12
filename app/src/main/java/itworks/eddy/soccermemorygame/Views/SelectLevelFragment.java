@@ -1,6 +1,9 @@
 package itworks.eddy.soccermemorygame.Views;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,6 +25,7 @@ public class SelectLevelFragment extends Fragment {
 
     @Bind(R.id.btnLvl1)
     Button btnLvl1;
+    Animator anim;
 
     public SelectLevelFragment() {
         // Required empty public constructor
@@ -34,6 +38,16 @@ public class SelectLevelFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_select_level, container, false);
         ButterKnife.bind(this, view);
+        anim = AnimatorInflater.loadAnimator(getContext(), R.animator.fade_out);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                Intent intent = new Intent(getActivity(), LevelOneGame.class);
+                startActivity(intent);
+            }
+        });
+        anim.setTarget(btnLvl1);
         return view;
     }
 
@@ -45,7 +59,6 @@ public class SelectLevelFragment extends Fragment {
 
     @OnClick(R.id.btnLvl1)
     public void onClick() {
-        Intent intent = new Intent(getActivity(), LevelOneGame.class);
-        startActivity(intent);
+        anim.start();
     }
 }
