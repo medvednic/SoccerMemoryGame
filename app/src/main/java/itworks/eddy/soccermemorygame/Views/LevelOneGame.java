@@ -5,11 +5,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import itworks.eddy.soccermemorygame.BackgroundMusic;
 import itworks.eddy.soccermemorygame.CardOnclickListener;
+import itworks.eddy.soccermemorygame.GameLogic;
 import itworks.eddy.soccermemorygame.R;
 
 public class LevelOneGame extends AppCompatActivity {
@@ -22,27 +26,28 @@ public class LevelOneGame extends AppCompatActivity {
     ImageView ivCard2;
     @Bind(R.id.ivCard3)
     ImageView ivCard3;
-    public static int [] selected;
-    public static int [] selected_ids;
+    private int boardSize = 4;
+    List<ImageView> ivCards = new ArrayList<>();
+    private int [] resources = {R.drawable.animal, R.drawable.fish};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_level_one_game);
         ButterKnife.bind(this);
+        CardOnclickListener.setContext(getApplicationContext());
         if (BackgroundMusic.isAllowed()) {
             BackgroundMusic.start(); //resume music
         }
-        selected = new int[2];
-        selected[0] = 0;
-        selected[1] = 0;
-        selected_ids = new int[2];
-        selected_ids[0] = 0;
-        selected_ids[1] = 0;
-        ivCard0.setOnClickListener(new CardOnclickListener(ivCard0, getApplicationContext(), R.drawable.fish));
-        ivCard1.setOnClickListener(new CardOnclickListener(ivCard1, getApplicationContext(), R.drawable.animal));
-        ivCard2.setOnClickListener(new CardOnclickListener(ivCard2, getApplicationContext(), R.drawable.fish));
-        ivCard3.setOnClickListener(new CardOnclickListener(ivCard3, getApplicationContext(), R.drawable.animal));
+        initIvCardList();
+        GameLogic.initCards(ivCards, resources);
+    }
+
+    private void initIvCardList() {
+        ivCards.add(ivCard0);
+        ivCards.add(ivCard1);
+        ivCards.add(ivCard2);
+        ivCards.add(ivCard3);
     }
 
     @Override
@@ -51,6 +56,13 @@ public class LevelOneGame extends AppCompatActivity {
             BackgroundMusic.pause(); //pause music
         }
         super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        GameLogic.clear();
+        finish();
+        super.onBackPressed();
     }
 
     @Override

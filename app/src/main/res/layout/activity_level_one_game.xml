@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:id="@+id/ivCard3"
+            android:id="@+id/ivCard2"
             android:src="@drawable/gear_head"
             android:layout_weight="1" />
 
@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:id="@+id/ivCard2"
+            android:id="@+id/ivCard3"
             android:src="@drawable/gear_head"
             android:layout_weight="1" />
 

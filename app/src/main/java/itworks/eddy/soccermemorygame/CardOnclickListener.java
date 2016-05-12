@@ -14,18 +14,22 @@ import com.squareup.picasso.Picasso;
  */
 public class CardOnclickListener implements View.OnClickListener {
 
-    ImageView imageView;
+    //ImageView imageView;
     int resource;
-    Context context;
+    static Context context;
 
-    public CardOnclickListener(ImageView view, Context context, int resource) {
-        this.imageView = view;
-        this.context = context;
+    public CardOnclickListener(int resource) {
+        //this.imageView = view;
         this.resource = resource;
+    }
+
+    public static void setContext(Context context) {
+        CardOnclickListener.context = context;
     }
 
     @Override
     public void onClick(final View v) {
+        final ImageView imageView = (ImageView) v;
         imageView.setEnabled(false);
         Animator a = AnimatorInflater.loadAnimator(context, R.animator.to_mid);
         a.addListener(new AnimatorListenerAdapter() {
