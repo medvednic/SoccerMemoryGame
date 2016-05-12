@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -22,19 +23,29 @@ import itworks.eddy.soccermemorygame.Models.Card;
 public class GameLogic {
 
     private static Context context;
-    private static int cardsNum;
-    private static int unmatchedCards;
     private static List<Card> cards;
     private static List<Card> selectedCards;
     private static List<Integer> randomized;
+    private static int cardsNum;
+    private static int unmatchedCards;
+    private static TextView scoreView;
+    private static int steps;
+    private static int score;
+    private static int winPoints;
+    private static int penalty;
 
-    public static void initCards(List<ImageView> imageViews, int [] resources, Context gameContext){
+    public static void initCards(Context gameContext, TextView scoreTv, List<ImageView> imageViews, int [] resources){
         context = gameContext;
         cards = new ArrayList<>();
         selectedCards = new ArrayList<>();
         randomized = new ArrayList<>();
         cardsNum = imageViews.size();
         unmatchedCards = cardsNum;
+        scoreView = scoreTv;
+        steps = 0;
+        score = 0;
+        winPoints = 1000;
+        penalty = 10;
         int [] randIndex = new int[2];
         Random randomGen = new Random();
         for (int resourceId: resources) {
@@ -44,8 +55,8 @@ public class GameLogic {
             }while (randIndex[0] == randIndex[1] || randomized.contains(randIndex[0]) || randomized.contains(randIndex[1]));
             randomized.add(randIndex[0]);
             randomized.add(randIndex[1]);
-            cards.add(new Card(imageViews.get(randIndex[0]), resourceId));
-            cards.add(new Card(imageViews.get(randIndex[1]), resourceId));
+            cards.add(new Card(imageViews.get(randIndex[0]), resourceId, penalty));
+            cards.add(new Card(imageViews.get(randIndex[1]), resourceId, penalty));
         }
     }
 
@@ -120,11 +131,16 @@ public class GameLogic {
     public static boolean checkMatch() {
         Log.d("Check for size: ", String.valueOf(selectedCards.size()));
         //if (selectedCards.size() == 2){
+        steps++;
         if (selectedCards.get(0).getResource() == selectedCards.get(1).getResource()){
+            score += selectedCards.get(0).getBonus() + selectedCards.get(1).getBonus();
+            scoreView.setText(String.valueOf(score));
             clearSelection();
             return true;
         }
         else{
+            selectedCards.get(0).lowerBonus();
+            selectedCards.get(1).lowerBonus();
             hideCard(selectedCards.get(0).getView());
             hideCard(selectedCards.get(1).getView());
         }
@@ -135,6 +151,8 @@ public class GameLogic {
     public static void checkWin(){
         unmatchedCards -=2;
         if (unmatchedCards == 0){
+            score += winPoints;
+            scoreView.setText(String.valueOf(score));
             Toast.makeText(context, "You have won!", Toast.LENGTH_SHORT).show();
         }
     }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,8 @@ public class LevelOneGame extends AppCompatActivity {
     ImageView ivCard2;
     @Bind(R.id.ivCard3)
     ImageView ivCard3;
+    @Bind(R.id.tvScore)
+    TextView tvScore;
     List<ImageView> ivCards = new ArrayList<>();
     private int [] resources = {R.drawable.animal, R.drawable.fish};
 
@@ -38,7 +41,7 @@ public class LevelOneGame extends AppCompatActivity {
             BackgroundMusic.start(); //resume music
         }
         initIvCardList();
-        GameLogic.initCards(ivCards, resources, getApplicationContext());
+        GameLogic.initCards(getApplicationContext(), tvScore, ivCards, resources);
     }
 
     private void initIvCardList() {
