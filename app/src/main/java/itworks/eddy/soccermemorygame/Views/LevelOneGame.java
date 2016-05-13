@@ -71,9 +71,10 @@ public class LevelOneGame extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        this.overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
-        displayBackDialog();
-
+        if (!GameLogic.isSelectedFull()){
+            this.overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+            displayBackDialog();
+        }
     }
 
     @Override

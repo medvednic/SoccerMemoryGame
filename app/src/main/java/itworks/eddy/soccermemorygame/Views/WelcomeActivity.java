@@ -1,5 +1,7 @@
 package itworks.eddy.soccermemorygame.Views;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,8 +13,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -164,17 +164,10 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void launchMenu() { //launch the main menu by intent
-        RotateAnimation rotate = new RotateAnimation(0, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f); //set custom rotation animation
-        rotate.setDuration(1500);
-        //rotate.setInterpolator(new LinearInterpolator());
-        rotate.setAnimationListener(new Animation.AnimationListener() {
+        ivLogo.animate().rotation(-360).setDuration(1000).setListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
                 //start main menu activity once the animation ends
                 Intent intent = new Intent(WelcomeActivity.this, MainMenuActivity.class);
                 //pass user settings to intent
@@ -183,14 +176,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        ivLogo.setAnimation(rotate);
-        ivLogo.startAnimation(rotate);
+        }).start();
     }
 
     private boolean verifyInput() { //verify user input in login/registration fields

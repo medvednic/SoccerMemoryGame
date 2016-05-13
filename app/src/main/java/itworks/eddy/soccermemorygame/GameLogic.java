@@ -169,8 +169,8 @@ public class GameLogic {
         Log.d("Size after clear",String.valueOf(selectedCards.size()));
     }
 
-    public static boolean isSelectedClear(){
-        return selectedCards.isEmpty();
+    public static boolean isSelectedFull(){
+        return selectedCards.size() == 2;
     }
 
     public static void clear(){

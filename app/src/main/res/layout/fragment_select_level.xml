@@ -19,21 +19,32 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Select Game Difficulty"
             android:id="@+id/textView3"
-            android:layout_gravity="center_horizontal|top" />
+            android:layout_gravity="center_horizontal|top"
+            android:padding="10dp" />
 
-        <Button
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Level 1"
-            android:id="@+id/btnLvl1"
-            android:layout_gravity="center_horizontal|top" />
+            android:id="@+id/IvLevel1"
+            android:src="@drawable/button_one"
+            android:layout_gravity="center_horizontal"
+            android:padding="5dp" />
 
-        <Button
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Level 2"
-            android:id="@+id/btnLvl2"
-            android:layout_gravity="center_horizontal|top" />
+            android:id="@+id/IvLevel2"
+            android:src="@drawable/button_two"
+            android:layout_gravity="center_horizontal"
+            android:padding="5dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/IvLevel3"
+            android:src="@drawable/button_three"
+            android:layout_gravity="center_horizontal"
+            android:padding="5dp" />
 
     </LinearLayout>
 
