@@ -28,6 +28,13 @@
             android:id="@+id/btnLvl1"
             android:layout_gravity="center_horizontal|top" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Level 2"
+            android:id="@+id/btnLvl2"
+            android:layout_gravity="center_horizontal|top" />
+
     </LinearLayout>
 
 </FrameLayout>

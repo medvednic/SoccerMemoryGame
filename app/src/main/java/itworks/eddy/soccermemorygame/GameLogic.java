@@ -31,10 +31,10 @@ public class GameLogic {
     private static TextView scoreView;
     private static int steps;
     private static int score;
-    private static int winPoints;
-    private static int penalty;
+    private static int winPoints = 1000;
+    private static int penalty = 10;
 
-    public static void initCards(Context gameContext, TextView scoreTv, List<ImageView> imageViews, int [] resources){
+    public static void initCards(Context gameContext, int level ,TextView scoreTv, List<ImageView> imageViews, int [] resources){
         context = gameContext;
         cards = new ArrayList<>();
         selectedCards = new ArrayList<>();
@@ -45,7 +45,7 @@ public class GameLogic {
         steps = 0;
         score = 0;
         winPoints = 1000;
-        penalty = 10;
+        penalty = 10*level;
         int [] randIndex = new int[2];
         Random randomGen = new Random();
         for (int resourceId: resources) {
@@ -167,6 +167,10 @@ public class GameLogic {
             selectedCards.remove(0);
         }
         Log.d("Size after clear",String.valueOf(selectedCards.size()));
+    }
+
+    public static boolean isSelectedClear(){
+        return selectedCards.isEmpty();
     }
 
     public static void clear(){

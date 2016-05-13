@@ -3,22 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/rainbow_woods_background"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@drawable/wooden_background"
-    tools:context="itworks.eddy.soccermemorygame.Views.LevelOneGame">
+    tools:context="itworks.eddy.soccermemorygame.LevelTwoGAme">
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/CardsLayoutR1"
-        android:layout_marginTop="49dp"
         android:layout_below="@+id/scoresLayout"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <ImageView
             android:layout_width="0dp"
@@ -33,8 +32,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:id="@+id/ivCard1"
             android:src="@drawable/gear_head"
+            android:id="@+id/ivCard1"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@drawable/gear_head"
+            android:id="@+id/ivCard2"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1" />
 
@@ -44,27 +52,37 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/CardsLayoutR2"
         android:layout_below="@+id/CardsLayoutR1"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/CardsLayoutR2">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:id="@+id/ivCard2"
             android:src="@drawable/gear_head"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
             android:id="@+id/ivCard3"
-            android:src="@drawable/gear_head"
+            android:layout_gravity="center_horizontal"
             android:layout_weight="1" />
 
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@drawable/gear_head"
+            android:id="@+id/ivCard4"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@drawable/gear_head"
+            android:id="@+id/ivCard5"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1" />
     </LinearLayout>
 
     <LinearLayout
@@ -81,7 +99,7 @@
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:src="@drawable/gear_head"
-            android:id="@+id/ivCard4"
+            android:id="@+id/ivCard6"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1" />
 
@@ -89,8 +107,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:id="@+id/ivCard5"
             android:src="@drawable/gear_head"
+            android:id="@+id/ivCard7"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@drawable/gear_head"
+            android:id="@+id/ivCard8"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1" />
     </LinearLayout>
@@ -99,7 +126,10 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/scoresLayout">
+        android:id="@+id/scoresLayout"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <TextView
             android:layout_width="wrap_content"
@@ -151,5 +181,43 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/CardsLayoutR4"
+        android:layout_alignBottom="@+id/tvSteps"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@drawable/gear_head"
+            android:id="@+id/ivCard9"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@drawable/gear_head"
+            android:id="@+id/ivCard10"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@drawable/gear_head"
+            android:id="@+id/ivCard11"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1" />
+    </LinearLayout>
+
 
 </RelativeLayout>

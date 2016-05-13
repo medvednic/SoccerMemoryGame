@@ -13,16 +13,17 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:src="@drawable/gear_head" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Main menu"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Main Menu"
+        android:id="@+id/nav_tag"
+        android:paddingTop="16dp" />
 
 </LinearLayout>

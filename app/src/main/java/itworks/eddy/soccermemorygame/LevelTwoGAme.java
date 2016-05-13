@@ -1,4 +1,4 @@
-package itworks.eddy.soccermemorygame.Views;
+package itworks.eddy.soccermemorygame;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,12 +13,11 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import itworks.eddy.soccermemorygame.BackgroundMusic;
-import itworks.eddy.soccermemorygame.GameLogic;
-import itworks.eddy.soccermemorygame.R;
 
-public class LevelOneGame extends AppCompatActivity {
+public class LevelTwoGAme extends AppCompatActivity {
 
+
+    List<ImageView> ivCards = new ArrayList<>();
     @Bind(R.id.ivCard0)
     ImageView ivCard0;
     @Bind(R.id.ivCard1)
@@ -31,17 +30,27 @@ public class LevelOneGame extends AppCompatActivity {
     ImageView ivCard4;
     @Bind(R.id.ivCard5)
     ImageView ivCard5;
+    @Bind(R.id.ivCard6)
+    ImageView ivCard6;
+    @Bind(R.id.ivCard7)
+    ImageView ivCard7;
+    @Bind(R.id.ivCard8)
+    ImageView ivCard8;
     @Bind(R.id.tvScore)
     TextView tvScore;
-    @Bind(R.id.tvSteps)
-    TextView tvSteps;
-    List<ImageView> ivCards = new ArrayList<>();
-    private int [] resources = {R.drawable.animal_duck, R.drawable.animal_owl, R.drawable.animal_wolf};
+    @Bind(R.id.ivCard9)
+    ImageView ivCard9;
+    @Bind(R.id.ivCard10)
+    ImageView ivCard10;
+    @Bind(R.id.ivCard11)
+    ImageView ivCard11;
+    private int[] resources = {R.drawable.sports_baseball, R.drawable.sports_basketball,
+            R.drawable.sports_bowling, R.drawable.sports_football, R.drawable.sports_soccer, R.drawable.sports_tennis};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_level_one_game);
+        setContentView(R.layout.activity_level_two_game);
         this.overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
         ButterKnife.bind(this);
         if (BackgroundMusic.isAllowed()) {
@@ -49,7 +58,7 @@ public class LevelOneGame extends AppCompatActivity {
         }
         //if record != 0 show it...
         initIvCardList();
-        GameLogic.initCards(getApplicationContext(), 1, tvScore, ivCards, resources);
+        GameLogic.initCards(getApplicationContext(), 2, tvScore, ivCards, resources);
     }
 
     private void initIvCardList() {
@@ -59,6 +68,12 @@ public class LevelOneGame extends AppCompatActivity {
         ivCards.add(ivCard3);
         ivCards.add(ivCard4);
         ivCards.add(ivCard5);
+        ivCards.add(ivCard6);
+        ivCards.add(ivCard7);
+        ivCards.add(ivCard8);
+        ivCards.add(ivCard9);
+        ivCards.add(ivCard10);
+        ivCards.add(ivCard11);
     }
 
     @Override
@@ -104,7 +119,7 @@ public class LevelOneGame extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         GameLogic.clear();
                         //finish(); //is necessary?
-                        LevelOneGame.super.onBackPressed();
+                        LevelTwoGAme.super.onBackPressed();
                     }
                 }).create().show();
     }

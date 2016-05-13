@@ -15,6 +15,7 @@ import android.widget.Button;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import itworks.eddy.soccermemorygame.LevelTwoGAme;
 import itworks.eddy.soccermemorygame.R;
 
 /**
@@ -25,6 +26,8 @@ public class SelectLevelFragment extends Fragment {
 
     @Bind(R.id.btnLvl1)
     Button btnLvl1;
+    @Bind(R.id.btnLvl2)
+    Button btnLvl2;
     Animator anim;
 
     public SelectLevelFragment() {
@@ -57,8 +60,16 @@ public class SelectLevelFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
-    @OnClick(R.id.btnLvl1)
-    public void onClick() {
-        anim.start();
+    @OnClick({R.id.btnLvl1, R.id.btnLvl2})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnLvl1:
+                anim.start();
+                break;
+            case R.id.btnLvl2:
+                Intent intent = new Intent(getActivity(), LevelTwoGAme.class);
+                startActivity(intent);
+                break;
+        }
     }
 }

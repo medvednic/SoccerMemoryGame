@@ -27,9 +27,11 @@
             android:name=".Views.MainMenuActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
-        <activity android:name=".Views.LevelOneGame"
+        <activity
+            android:name=".Views.LevelOneGame"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity android:name=".LevelTwoGAme"></activity>
     </application>
 
 </manifest>
