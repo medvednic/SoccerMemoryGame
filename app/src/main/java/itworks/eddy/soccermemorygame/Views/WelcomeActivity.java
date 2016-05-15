@@ -27,6 +27,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import itworks.eddy.soccermemorygame.Models.ServerResponse;
 import itworks.eddy.soccermemorygame.Models.User;
+import itworks.eddy.soccermemorygame.Models.UsersList;
 import itworks.eddy.soccermemorygame.NoSpaceTextWatcher;
 import itworks.eddy.soccermemorygame.R;
 import itworks.eddy.soccermemorygame.RESTaccess.apiServices;
@@ -68,6 +69,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private String passwordVerify;
     private Boolean musicState;
     private float volume;
+    private User currentUser;
     apiServices api;
     SharedPreferences appPreferences;
 
@@ -209,12 +211,11 @@ public class WelcomeActivity extends AppCompatActivity {
     private void registerUser() { //register a new user in the server
         Log.d("Async-->", "Register");
         hashPassword();
-        //User user = new User(username, password); //needed for post form based registration
-        Call<User> register = api.register(username, password); // TODO: 28/04/2016 Call void?
-        register.enqueue(new Callback<User>() {
+        Call<ServerResponse> register = api.register(username, password); // TODO: 28/04/2016 Call void?
+        register.enqueue(new Callback<ServerResponse>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful()) { //if user was added, login
+            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+                if (response.isSuccessful()) { //if user was added, start local session
                     registerDialog();
                 } else {
                     if (response.code() == 400) { //username exists
@@ -231,7 +232,7 @@ public class WelcomeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<ServerResponse> call, Throwable t) {
 
             }
         });
@@ -240,15 +241,16 @@ public class WelcomeActivity extends AppCompatActivity {
     private void login() { //login, verify user existence in db
         hashPassword();
         //User user = new User(username, password); //needed for post form based registration
-        Call<ServerResponse> login = api.login(username, password);
+        Call<UsersList> login = api.login(username, password);
         Log.d("Async-->", "Login");
-        login.enqueue(new Callback<ServerResponse>() {
+        login.enqueue(new Callback<UsersList>() {
             @Override
-            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+            public void onResponse(Call<UsersList> call, Response<UsersList> response) {
                 Log.d("login", "res");
-                if (response.isSuccessful()) { //if server returned no error, register user
-                    isVerified = response.body().isSuccess();
-                    if (isVerified) {
+                if (response.isSuccessful()) { //if server returned no error, start local session
+                    currentUser = response.body().getUser().get(0);
+                    if (currentUser != null) {
+                        Log.d(currentUser.getUsername() + " " + currentUser.getLvl1(), currentUser.getLvl2() + " " + currentUser .getLvl3());
                         performLocalLogin();
                         launchMenu();
                     }
@@ -266,7 +268,7 @@ public class WelcomeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ServerResponse> call, Throwable t) {
+            public void onFailure(Call<UsersList> call, Throwable t) {
 
             }
         });
