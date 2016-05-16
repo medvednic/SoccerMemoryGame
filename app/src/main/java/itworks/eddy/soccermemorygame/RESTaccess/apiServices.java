@@ -18,4 +18,9 @@ public interface apiServices {
     @POST("register")
     Call<ServerResponse> register(@Header("username") String username, @Header("password") String password);
     //Call<User> register(@Body User user); //old post form based registration
+
+    @POST("updatescore")
+    Call<ServerResponse> updateScore(@Header("username") String username, @Header("score") int score,
+                                     @Header("level") int level);
 }
+

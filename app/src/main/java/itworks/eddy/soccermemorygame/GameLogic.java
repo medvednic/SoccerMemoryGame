@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +18,13 @@ import java.util.List;
 import java.util.Random;
 
 import itworks.eddy.soccermemorygame.Models.Card;
+import itworks.eddy.soccermemorygame.Models.ServerResponse;
+import itworks.eddy.soccermemorygame.RESTaccess.apiServices;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by medve on 12/05/2016.
@@ -23,6 +32,7 @@ import itworks.eddy.soccermemorygame.Models.Card;
 public class GameLogic {
 
     private static Context context;
+    private static int level;
     private static List<Card> cards;
     private static List<Card> selectedCards;
     private static List<Integer> randomized;
@@ -34,8 +44,9 @@ public class GameLogic {
     private static int winPoints = 1000;
     private static int penalty = 10;
 
-    public static void initCards(Context gameContext, int level ,TextView scoreTv, List<ImageView> imageViews, int [] resources){
+    public static void initCards(Context gameContext, int gameLevel ,TextView scoreTv, List<ImageView> imageViews, int [] resources){
         context = gameContext;
+        level = gameLevel;
         cards = new ArrayList<>();
         selectedCards = new ArrayList<>();
         randomized = new ArrayList<>();
@@ -148,15 +159,6 @@ public class GameLogic {
         return false;
     }
 
-    public static void checkWin(){
-        unmatchedCards -=2;
-        if (unmatchedCards == 0){
-            score += winPoints;
-            scoreView.setText(String.valueOf(score));
-            Toast.makeText(context, "You have won!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     public static void clearSelection() {
         Log.d("Size before clear",String.valueOf(selectedCards.size()));
         if (selectedCards.size() == 2){
@@ -167,6 +169,67 @@ public class GameLogic {
             selectedCards.remove(0);
         }
         Log.d("Size after clear",String.valueOf(selectedCards.size()));
+    }
+
+    public static void checkWin(){
+        unmatchedCards -=2;
+        if (unmatchedCards == 0){
+            score += winPoints;
+            scoreView.setText(String.valueOf(score));
+            Toast.makeText(context, "You have won!", Toast.LENGTH_SHORT).show();
+            if (score > Session.getCurrentLevelScore(level)){
+                scoreView.setTextColor(Color.YELLOW);
+                updateRecord();
+                postScore();
+            }
+        }
+    }
+
+     private static void updateRecord() {
+        SharedPreferences appPreferences = context.getSharedPreferences("UserData", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = appPreferences.edit();
+        if (level == 1){
+            Session.currentUser.setLvl1(score);
+            editor.putInt("lvl1", Session.currentUser.getLvl1());
+        } else if (level == 2) {
+            Session.currentUser.setLvl2(score);
+            editor.putInt("lvl2", Session.currentUser.getLvl2());
+        } else {
+            Session.currentUser.setLvl3(score);
+            editor.putInt("lvl3", Session.currentUser.getLvl3());
+        }
+        editor.apply();
+    }
+
+    private static void postScore() {
+        final String BASE_URL = context.getString(R.string.api_server_url);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        apiServices api = retrofit.create(apiServices.class);
+        Call<ServerResponse> updateScore = api.updateScore(Session.currentUser.getUsername(), score, level);
+        updateScore.enqueue(new Callback<ServerResponse>() {
+            @Override
+            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+                if (response.isSuccessful()) { //if score was updated
+                    Toast.makeText(context, "High score was registered!", Toast.LENGTH_SHORT);
+                } else {
+                    if (response.code() == 400) { //failed to update score
+                        Log.d("failed to update score", " 400");
+                    } else { //server returned error
+                        String errMsg = response.raw().message();
+                        Log.d("Error", errMsg);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse> call, Throwable t) {
+
+            }
+        });
+
     }
 
     public static boolean isSelectedFull(){

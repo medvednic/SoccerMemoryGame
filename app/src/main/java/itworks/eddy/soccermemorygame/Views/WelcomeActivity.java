@@ -31,6 +31,7 @@ import itworks.eddy.soccermemorygame.Models.UsersList;
 import itworks.eddy.soccermemorygame.NoSpaceTextWatcher;
 import itworks.eddy.soccermemorygame.R;
 import itworks.eddy.soccermemorygame.RESTaccess.apiServices;
+import itworks.eddy.soccermemorygame.Session;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -62,14 +63,12 @@ public class WelcomeActivity extends AppCompatActivity {
     Button btnCancel;
     @Bind(R.id.ivLogo)
     ImageView ivLogo;
-    private Boolean isVerified = false;
     private Boolean performRegistration = false;
     private String username;
     private String password;
     private String passwordVerify;
     private Boolean musicState;
     private float volume;
-    private User currentUser;
     apiServices api;
     SharedPreferences appPreferences;
 
@@ -142,7 +141,10 @@ public class WelcomeActivity extends AppCompatActivity {
         musicState = appPreferences.getBoolean("music", true);
         volume = appPreferences.getFloat("volume", 0.75f);
         if (!username.equals("")) {
-            Log.d("Logged user-->", username);
+            Session.currentUser = new User(username);
+            Session.currentUser.setLvl1(appPreferences.getInt("lvl1", 0));
+            Session.currentUser.setLvl2(appPreferences.getInt("lvl2", 0));
+            Session.currentUser.setLvl3(appPreferences.getInt("lvl3", 0));
             return true;
         } else {
             return false;
@@ -211,11 +213,12 @@ public class WelcomeActivity extends AppCompatActivity {
     private void registerUser() { //register a new user in the server
         Log.d("Async-->", "Register");
         hashPassword();
-        Call<ServerResponse> register = api.register(username, password); // TODO: 28/04/2016 Call void?
+        Call<ServerResponse> register = api.register(username, password);
         register.enqueue(new Callback<ServerResponse>() {
             @Override
             public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
                 if (response.isSuccessful()) { //if user was added, start local session
+                    Session.currentUser = new User(username, 0, 0, 0);
                     registerDialog();
                 } else {
                     if (response.code() == 400) { //username exists
@@ -248,9 +251,8 @@ public class WelcomeActivity extends AppCompatActivity {
             public void onResponse(Call<UsersList> call, Response<UsersList> response) {
                 Log.d("login", "res");
                 if (response.isSuccessful()) { //if server returned no error, start local session
-                    currentUser = response.body().getUser().get(0);
-                    if (currentUser != null) {
-                        Log.d(currentUser.getUsername() + " " + currentUser.getLvl1(), currentUser.getLvl2() + " " + currentUser .getLvl3());
+                    Session.currentUser = response.body().getUser().get(0);
+                    if (Session.currentUser != null) {
                         performLocalLogin();
                         launchMenu();
                     }
@@ -314,9 +316,12 @@ public class WelcomeActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void performLocalLogin() { //save username in shared preferences
+    private void performLocalLogin() { //save username and scores in shared preferences
         SharedPreferences.Editor editor = appPreferences.edit();
-        editor.putString("username", username);
+        editor.putString("username", Session.currentUser.getUsername());
+        editor.putInt("lvl1", Session.currentUser.getLvl1());
+        editor.putInt("lvl2", Session.currentUser.getLvl2());
+        editor.putInt("lvl3", Session.currentUser.getLvl3());
         editor.apply();
     }
 

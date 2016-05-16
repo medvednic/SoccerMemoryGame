@@ -16,6 +16,7 @@ import butterknife.ButterKnife;
 import itworks.eddy.soccermemorygame.BackgroundMusic;
 import itworks.eddy.soccermemorygame.GameLogic;
 import itworks.eddy.soccermemorygame.R;
+import itworks.eddy.soccermemorygame.Session;
 
 public class LevelOneGame extends AppCompatActivity {
 
@@ -33,6 +34,8 @@ public class LevelOneGame extends AppCompatActivity {
     ImageView ivCard5;
     @Bind(R.id.tvScore)
     TextView tvScore;
+    @Bind(R.id.tvRecord)
+    TextView tvRecord;
     @Bind(R.id.tvSteps)
     TextView tvSteps;
     List<ImageView> ivCards = new ArrayList<>();
@@ -48,6 +51,7 @@ public class LevelOneGame extends AppCompatActivity {
             BackgroundMusic.start(); //resume music
         }
         //if record != 0 show it...
+        tvRecord.setText(Session.currentUser.getLvl1().toString());
         initIvCardList();
         GameLogic.initCards(getApplicationContext(), 1, tvScore, ivCards, resources);
     }
