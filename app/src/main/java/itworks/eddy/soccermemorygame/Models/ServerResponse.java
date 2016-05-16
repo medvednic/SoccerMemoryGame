@@ -1,7 +1,7 @@
 package itworks.eddy.soccermemorygame.Models;
 
-/**
- * Created by medve on 27/04/2016.
+/** ServerResponse - used to distinguish between successful or erroneous server responses
+ *
  */
 public class ServerResponse {
     private boolean success;

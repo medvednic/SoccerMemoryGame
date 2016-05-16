@@ -18,8 +18,10 @@ import butterknife.ButterKnife;
 import itworks.eddy.soccermemorygame.BackgroundMusic;
 import itworks.eddy.soccermemorygame.R;
 
-/**
- * A simple {@link Fragment} subclass.
+/** SettingsFragment - this is the settings fragment
+ *  the user can control music/sound settings from here
+ *  the user can reset his/her scores
+ *  the user can deactivate the account
  */
 public class SettingsFragment extends Fragment {
 
@@ -34,12 +36,6 @@ public class SettingsFragment extends Fragment {
     Button btRestartScore;
     @Bind(R.id.btDeleteUser)
     Button btDeleteUser;
-
-    /** SettingsFragment - this is the settings fragment
-     *  the user can control music/sound settings from here
-     *  the user can reset his/her scores
-     *  the user can deactivate the account
-     */
 
     public SettingsFragment() {
         // Required empty public constructor

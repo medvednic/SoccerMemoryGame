@@ -15,7 +15,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -78,7 +77,6 @@ public class MainMenuActivity extends AppCompatActivity
         if (extras != null){
             allowMusic = extras.getBoolean("music");
             volume = extras.getFloat("volume");
-            Log.d(String.valueOf(volume)+" <-V, Allow-> ", String.valueOf(allowMusic));
         }
         if (allowMusic){ //init and start background music player
             BackgroundMusic.initPlayer(this, allowMusic, volume);
@@ -181,6 +179,7 @@ public class MainMenuActivity extends AppCompatActivity
         //display logout dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure?").setTitle("Log out");
+        builder.setNegativeButton("Cancel", null);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -189,12 +188,6 @@ public class MainMenuActivity extends AppCompatActivity
                 Intent intent = new Intent(MainMenuActivity.this, WelcomeActivity.class);
                 startActivity(intent);
                 finish();
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.d("stay", "cancel");
             }
         });
         AlertDialog dialog = builder.create();
@@ -207,6 +200,9 @@ public class MainMenuActivity extends AppCompatActivity
         editor.remove("username");
         editor.remove("music");
         editor.remove("volume");
+        editor.remove("lvl1");
+        editor.remove("lvl2");
+        editor.remove("lvl3");
         editor.apply();
     }
 }

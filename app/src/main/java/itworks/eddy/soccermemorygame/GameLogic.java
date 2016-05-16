@@ -6,7 +6,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +26,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by medve on 12/05/2016.
+ * GameLogic - manage the memory game logic, uses static data an methods in order to be accessible
+ *             from different activities.
+ * 1. the class receives context, views and resources from a game level activity
+ * 2. random views are assigned for each card image resource
+ * 3. the class's methods are called in the cards onclick listeners in order to check match/win
  */
 public class GameLogic {
 
@@ -59,19 +62,23 @@ public class GameLogic {
         penalty = 10*level;
         int [] randIndex = new int[2];
         Random randomGen = new Random();
+        //for each resource - generate a unique tuple of view indexes
         for (int resourceId: resources) {
             do{
                 randIndex[0] = randomGen.nextInt(cardsNum);
                 randIndex[1] = randomGen.nextInt(cardsNum);
             }while (randIndex[0] == randIndex[1] || randomized.contains(randIndex[0]) || randomized.contains(randIndex[1]));
+            //save generated indexes
             randomized.add(randIndex[0]);
             randomized.add(randIndex[1]);
+            //create a card
             cards.add(new Card(imageViews.get(randIndex[0]), resourceId, penalty));
             cards.add(new Card(imageViews.get(randIndex[1]), resourceId, penalty));
         }
     }
 
     public static void selectCard(Card selectedCard){
+        //if there are less than two cards selected - select the card if it wasn't selected already
         if (selectedCards.size() < 2 && !selectedCards.contains(selectedCard)){
             selectedCards.add(selectedCard);
             revealCard(selectedCard);
@@ -79,16 +86,17 @@ public class GameLogic {
     }
 
     private static void revealCard(final Card card) {
+        //perform two animations to rotate the view, change it's resource and check for match if is the second selection
         final ImageView imageView = card.getView();
         final int resource = card.getResource();
         imageView.setEnabled(false);
-        Animator a = AnimatorInflater.loadAnimator(context, R.animator.to_mid);
+        Animator a = AnimatorInflater.loadAnimator(context, R.animator.to_mid); //rotate the card 90 degrees
         a.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                Picasso.with(context).load(resource).into(imageView);
-                Animator a = AnimatorInflater.loadAnimator(context, R.animator.from_mid);
+                Picasso.with(context).load(resource).into(imageView); //change resource
+                Animator a = AnimatorInflater.loadAnimator(context, R.animator.from_mid); //rotate another 90 degrees and reveal
                 a.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -96,13 +104,9 @@ public class GameLogic {
                         if (selectedCards.size() == 2 && selectedCards.get(1) == card){ //run check only after second flip
                             if (checkMatch()) {
                                 Toast.makeText(context, "Match found!", Toast.LENGTH_SHORT).show();
-                                //clearSelection();
-                                checkWin();
+                                checkWin(); //check if last pair was matched
                             }
                         }
-                        /*else {
-                            hideCard(selectedCards.get(0).getView()); //how to make it work? si it possible?!
-                        }*/
                     }
                 });
                 a.setTarget(imageView);
@@ -114,18 +118,20 @@ public class GameLogic {
     }
 
     private static void hideCard(final ImageView imageView) {
-        Animator a = AnimatorInflater.loadAnimator(context, R.animator.back_to_mid);
+        //perform two animations to hide the card
+        Animator a = AnimatorInflater.loadAnimator(context, R.animator.back_to_mid); //rotate the card 90 degrees back
         a.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                Picasso.with(context).load(R.drawable.gear_head).into(imageView);
-                Animator a = AnimatorInflater.loadAnimator(context, R.animator.back_from_mid);
+                Picasso.with(context).load(R.drawable.gear_head).into(imageView); //change resource
+                Animator a = AnimatorInflater.loadAnimator(context, R.animator.back_from_mid); //rotate another 90 degrees back and hide
                 a.setTarget(imageView);
                 a.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
+                        //clear selection after both cards are hidden
                         if (selectedCards.size() == 2 && selectedCards.get(1).getView() == imageView){
                             clearSelection();
                         }
@@ -140,27 +146,24 @@ public class GameLogic {
     }
 
     public static boolean checkMatch() {
-        Log.d("Check for size: ", String.valueOf(selectedCards.size()));
-        //if (selectedCards.size() == 2){
         steps++;
+        //if the resources of the selected cards are the same - add bonus to score
         if (selectedCards.get(0).getResource() == selectedCards.get(1).getResource()){
             score += selectedCards.get(0).getBonus() + selectedCards.get(1).getBonus();
             scoreView.setText(String.valueOf(score));
             clearSelection();
             return true;
         }
-        else{
+        else{ //mismatch will cause card bonus to decrease
             selectedCards.get(0).lowerBonus();
             selectedCards.get(1).lowerBonus();
             hideCard(selectedCards.get(0).getView());
             hideCard(selectedCards.get(1).getView());
         }
-        //}
         return false;
     }
 
-    public static void clearSelection() {
-        Log.d("Size before clear",String.valueOf(selectedCards.size()));
+    public static void clearSelection() { //clear selected cards
         if (selectedCards.size() == 2){
             selectedCards.remove(1);
             selectedCards.remove(0);
@@ -168,15 +171,15 @@ public class GameLogic {
         else if (selectedCards.size() == 1){
             selectedCards.remove(0);
         }
-        Log.d("Size after clear",String.valueOf(selectedCards.size()));
     }
 
-    public static void checkWin(){
+    public static void checkWin(){ //check if last pair was matched
         unmatchedCards -=2;
         if (unmatchedCards == 0){
             score += winPoints;
             scoreView.setText(String.valueOf(score));
-            Toast.makeText(context, "You have won!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "You have won! Press back", Toast.LENGTH_SHORT).show();
+            //check if players record for the level was beaten, post it to the server if so.
             if (score > Session.getCurrentLevelScore(level)){
                 scoreView.setTextColor(Color.YELLOW);
                 updateRecord();
@@ -186,6 +189,7 @@ public class GameLogic {
     }
 
      private static void updateRecord() {
+         //update score record in shared preferences and user session
         SharedPreferences appPreferences = context.getSharedPreferences("UserData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = appPreferences.edit();
         if (level == 1){
@@ -201,7 +205,7 @@ public class GameLogic {
         editor.apply();
     }
 
-    private static void postScore() {
+    private static void postScore() { //post score to database
         final String BASE_URL = context.getString(R.string.api_server_url);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -212,16 +216,15 @@ public class GameLogic {
         updateScore.enqueue(new Callback<ServerResponse>() {
             @Override
             public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
-                if (response.isSuccessful()) { //if score was updated
-                    Toast.makeText(context, "High score was registered!", Toast.LENGTH_SHORT);
+                /*if (response.isSuccessful()) { //if score was updated
+
                 } else {
                     if (response.code() == 400) { //failed to update score
-                        Log.d("failed to update score", " 400");
+
                     } else { //server returned error
-                        String errMsg = response.raw().message();
-                        Log.d("Error", errMsg);
+
                     }
-                }
+                }*/
             }
 
             @Override
@@ -235,7 +238,7 @@ public class GameLogic {
         return selectedCards.size() == 2;
     }
 
-    public static void clear(){
+    public static void clear(){ //clear array lists and context
         cards = new ArrayList<>();
         selectedCards = new ArrayList<>();
         randomized = new ArrayList<>();

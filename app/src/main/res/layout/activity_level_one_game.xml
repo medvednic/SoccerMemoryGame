@@ -14,91 +14,6 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/CardsLayoutR1"
-        android:layout_marginTop="49dp"
-        android:layout_below="@+id/scoresLayout"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:src="@drawable/gear_head"
-            android:id="@+id/ivCard0"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:id="@+id/ivCard1"
-            android:src="@drawable/gear_head"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/CardsLayoutR1"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/CardsLayoutR2">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:id="@+id/ivCard2"
-            android:src="@drawable/gear_head"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:id="@+id/ivCard3"
-            android:src="@drawable/gear_head"
-            android:layout_weight="1" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/CardsLayoutR3"
-        android:layout_below="@+id/CardsLayoutR2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:src="@drawable/gear_head"
-            android:id="@+id/ivCard4"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:id="@+id/ivCard5"
-            android:src="@drawable/gear_head"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/scoresLayout">
 
         <TextView
@@ -140,16 +55,91 @@
             android:layout_weight="1" />
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="0"
-        android:id="@+id/tvSteps"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:layout_alignParentBottom="true"
+        android:id="@+id/CardsLayoutR1"
+        android:layout_marginTop="49dp"
+        android:layout_below="@+id/scoresLayout"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@drawable/gear_head"
+            android:id="@+id/ivCard0"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:id="@+id/ivCard1"
+            android:src="@drawable/gear_head"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/CardsLayoutR1"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/CardsLayoutR2">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:id="@+id/ivCard2"
+            android:src="@drawable/gear_head"
+            android:layout_weight="1"
+            android:layout_gravity="center_horizontal" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:id="@+id/ivCard3"
+            android:src="@drawable/gear_head"
+            android:layout_weight="1"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/CardsLayoutR3"
+        android:layout_below="@+id/CardsLayoutR2"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@drawable/gear_head"
+            android:id="@+id/ivCard4"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:id="@+id/ivCard5"
+            android:src="@drawable/gear_head"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1" />
+    </LinearLayout>
 
 </RelativeLayout>

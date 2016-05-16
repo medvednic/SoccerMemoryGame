@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -27,15 +27,18 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * A simple {@link Fragment} subclass.
+/** ScoresFragment - user scores of all three difficulty levels are displayed
+ *  in a RecyclerView, one and only one server call will be performed for data fetching of each level.
+ *
  */
 public class ScoresFragment extends Fragment {
-
 
     @Bind(R.id.scoresRecyclerView)
     RecyclerView scoresRecyclerView;
     ScoresAdapter scoresAdapter;
+    List<User> data0;
+    List<User> data1;
+    List<User> data2;
     @Bind(R.id.btnLvl1)
     Button btnLvl1;
     @Bind(R.id.btnLvl2)
@@ -53,11 +56,10 @@ public class ScoresFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_scores, container, false);
         ButterKnife.bind(this, view);
-        //getScores();
         return view;
     }
 
-    private void getScores(final int level) {
+    private void getScores(final int level) { //get scores from database
         final String BASE_URL = getContext().getString(R.string.api_server_url);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -69,16 +71,23 @@ public class ScoresFragment extends Fragment {
             @Override
             public void onResponse(Call<UsersList> call, Response<UsersList> response) {
                 if (response.isSuccessful()) { //if score was updated
-                    List<User> data = response.body().getUser();
-                    scoresAdapter = new ScoresAdapter(data, level);
-                    scoresRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                    scoresRecyclerView.setAdapter(scoresAdapter);
+                    //corresponding list of users (scores) will be initialized according to desired level
+                    if (level == 1){
+                        data0 = response.body().getUser();
+                        initRecyclerView(data0, level);
+                    }else if (level == 2){
+                        data1 = response.body().getUser();
+                        initRecyclerView(data1, level);
+                    }else {
+                        data2 = response.body().getUser();
+                        initRecyclerView(data2, level);
+                    }
+                    enableButtons();
                 } else {
                     if (response.code() == 400) { //failed to update score
-                        Log.d("failed to get scores", " 400");
-                    } else { //server returned error
-                        String errMsg = response.raw().message();
-                        Log.d("Error", errMsg);
+                        Toast.makeText(getContext(), "Failed to ge scores", Toast.LENGTH_SHORT).show();
+                    } else { //server returned unexpected error
+                        Toast.makeText(getContext(), "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -97,17 +106,50 @@ public class ScoresFragment extends Fragment {
     }
 
     @OnClick({R.id.btnLvl1, R.id.btnLvl2, R.id.btnLvl3})
-    public void onClick(View view) {
+    public void onClick(View view) { //if data was previously fetched, no server call will be made
         switch (view.getId()) {
             case R.id.btnLvl1:
-                getScores(1);
+                if (data0 == null){
+                    disableButtons();
+                    getScores(1);
+                }else {
+                    initRecyclerView(data0, 1);
+                }
                 break;
             case R.id.btnLvl2:
-                getScores(2);
+                if (data1 == null){
+                    disableButtons();
+                    getScores(2);
+                }else {
+                    initRecyclerView(data1, 2);
+                }
                 break;
             case R.id.btnLvl3:
-                getScores(3);
+                if (data2 == null){
+                    disableButtons();
+                    getScores(3);
+                }else {
+                    initRecyclerView(data2, 3);
+                }
                 break;
         }
+    }
+
+    private void disableButtons() {
+        btnLvl1.setEnabled(false);
+        btnLvl2.setEnabled(false);
+        btnLvl3.setEnabled(false);
+    }
+
+    private void enableButtons() {
+        btnLvl1.setEnabled(true);
+        btnLvl2.setEnabled(true);
+        btnLvl3.setEnabled(true);
+    }
+
+    public void initRecyclerView(List<User> data, int level){ //initialize adapter and RecyclerView
+        scoresAdapter = new ScoresAdapter(data, level);
+        scoresRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        scoresRecyclerView.setAdapter(scoresAdapter);
     }
 }

@@ -1,6 +1,7 @@
 package itworks.eddy.soccermemorygame.Views;
 
 import android.animation.Animator;
+import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,7 +12,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,7 +44,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * 2.  shared preferences are accessed in order to check for previous session
  * 3.  if a previous session was detected, users settings are loaded, otherwise default settings
  * 4.  login/registration options are presented to the user if no previous session was detected,
- *     input is validated and then authenticated via the database using asynchronous web access
+ * input is validated and then authenticated via the database using asynchronous web access
  * 5.  in both cases the main menu activity will be launched.
  */
 public class WelcomeActivity extends AppCompatActivity {
@@ -63,12 +63,15 @@ public class WelcomeActivity extends AppCompatActivity {
     Button btnCancel;
     @Bind(R.id.ivLogo)
     ImageView ivLogo;
+    @Bind(R.id.loadingCog)
+    ImageView loadingCog;
     private Boolean performRegistration = false;
     private String username;
     private String password;
     private String passwordVerify;
     private Boolean musicState;
     private float volume;
+    Animator anim;
     apiServices api;
     SharedPreferences appPreferences;
 
@@ -82,10 +85,11 @@ public class WelcomeActivity extends AppCompatActivity {
         tbUsername.addTextChangedListener(new NoSpaceTextWatcher(tbUsername));
         tbPassword.addTextChangedListener(new NoSpaceTextWatcher(tbPassword));
         tbVerifyPassword.addTextChangedListener(new NoSpaceTextWatcher(tbVerifyPassword));
-
+        anim = AnimatorInflater.loadAnimator(this, R.animator.rotation);
+        anim.setTarget(loadingCog);
         hideLoginOpts();
         apiServiceInit();
-        if (!isNetworkAvailable()){
+        if (!isNetworkAvailable()) {
             networkDialog();
         }
         if (!getLoggedInState()) {
@@ -99,7 +103,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private boolean isNetworkAvailable() {//check for network connectivity
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        if (activeNetworkInfo != null){
+        if (activeNetworkInfo != null) {
             return activeNetworkInfo.isConnected();
         }
         return false;
@@ -107,7 +111,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void networkDialog() { //if no connectivity: close or restart app
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Internet connection is unavailable").setTitle("Can't launch game");
+        builder.setMessage("Internet connection is unavailable").setTitle("Can't launch game").setCancelable(false);
         builder.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -190,43 +194,37 @@ public class WelcomeActivity extends AppCompatActivity {
         if (performRegistration) { //if registration is performed
             passwordVerify = tbVerifyPassword.getText().toString();
         }
-        Log.d("entered details", username + " " + password + " " + passwordVerify);
         if (username.length() < 3) { //username length
             verified = false;
             Toast.makeText(getApplicationContext(), "Username must be at least 3 characters long", Toast.LENGTH_SHORT).show();
-            Log.d("short username", username);
         }
         if (password.length() < 4) { //password length
             verified = false;
             Toast.makeText(getApplicationContext(), "Password must be at least 4 characters long", Toast.LENGTH_SHORT).show();
-            Log.d("short password", password);
         }
         if (performRegistration && !passwordVerify.equals(null) && !password.equals(passwordVerify)) {
             //password verification upon registration
             verified = false;
             Toast.makeText(getApplicationContext(), "Password don't match", Toast.LENGTH_SHORT).show();
-            Log.d("password don't match", password + " " + passwordVerify);
         }
         return verified;
     }
 
     private void registerUser() { //register a new user in the server
-        Log.d("Async-->", "Register");
         hashPassword();
         Call<ServerResponse> register = api.register(username, password);
         register.enqueue(new Callback<ServerResponse>() {
             @Override
             public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+                stopCogAnimation();
                 if (response.isSuccessful()) { //if user was added, start local session
                     Session.currentUser = new User(username, 0, 0, 0);
                     registerDialog();
-                } else {
+                } else {    //server returned an error
                     if (response.code() == 400) { //username exists
-                        Log.d("username exists", username);
                         Toast.makeText(getApplicationContext(), "Username exists, please enter different username", Toast.LENGTH_SHORT).show();
-                    } else { //server returned error
-                        String errMsg = response.raw().message();
-                        Log.d("Error", errMsg);
+                    }else { //server returned unexpected error
+                        Toast.makeText(getApplicationContext(), "Error: " + String.valueOf(response.code()), Toast.LENGTH_SHORT).show();
                     }
                     btnRegister.setEnabled(true);
                     btnCancel.setEnabled(true);
@@ -243,13 +241,11 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void login() { //login, verify user existence in db
         hashPassword();
-        //User user = new User(username, password); //needed for post form based registration
         Call<UsersList> login = api.login(username, password);
-        Log.d("Async-->", "Login");
         login.enqueue(new Callback<UsersList>() {
             @Override
             public void onResponse(Call<UsersList> call, Response<UsersList> response) {
-                Log.d("login", "res");
+                stopCogAnimation();
                 if (response.isSuccessful()) { //if server returned no error, start local session
                     Session.currentUser = response.body().getUser().get(0);
                     if (Session.currentUser != null) {
@@ -258,15 +254,14 @@ public class WelcomeActivity extends AppCompatActivity {
                     }
                 } else { //server returned error
                     if (response.code() == 400) { //will return if username exists but password is incorrect
-                        Log.d("wrong password", username);
                         Toast.makeText(getApplicationContext(), "Wrong password", Toast.LENGTH_SHORT).show();
                     }
-                    if (response.code() == 422) { //will return if username doesn't exists
-                        Log.d("Wrong username", username);
+                    else if (response.code() == 422) { //will return if username doesn't exists
                         Toast.makeText(getApplicationContext(), "Wrong username", Toast.LENGTH_SHORT).show();
                     }
-                    String errMsg = response.raw().message();
-                    Log.d("Error", errMsg);
+                    else {
+                        Toast.makeText(getApplicationContext(), "Error: " + String.valueOf(response.code()), Toast.LENGTH_SHORT).show();
+                    }
                     btnLogin.setEnabled(true);
                     btnRegister.setEnabled(true);
                     SetEditText(true);
@@ -288,7 +283,6 @@ public class WelcomeActivity extends AppCompatActivity {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            Log.d("error->", "Error initializing message digest");
         }
         byte[] hash = new byte[0];
         try {
@@ -303,12 +297,11 @@ public class WelcomeActivity extends AppCompatActivity {
             hexString.append(hex);
         }
         password = hexString.toString();
-        Log.d("Password Hashed-->", password);
     }
 
     private void registerDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Welcome " + username).setTitle("Successful Registration");
+        builder.setMessage("Welcome " + username).setTitle("Successful Registration").setCancelable(false);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -333,9 +326,8 @@ public class WelcomeActivity extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnLogin:
-                Log.d("Click", "login");
                 if (verifyInput()) {
-                    Log.d("Verified input", "True");
+                    animateCog();
                     btnLogin.setEnabled(false);
                     btnRegister.setEnabled(false);
                     SetEditText(false);
@@ -343,13 +335,12 @@ public class WelcomeActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.btnRegister:
-                Log.d("Click", "register");
                 performRegistration = true;
                 btnLogin.setVisibility(View.INVISIBLE);
                 btnCancel.setVisibility(View.VISIBLE);
                 tbVerifyPassword.setVisibility(View.VISIBLE);
                 if (verifyInput()) {
-                    Log.d("Verified input", "true");
+                    animateCog();
                     btnRegister.setEnabled(false);
                     btnCancel.setEnabled(false);
                     SetEditText(false);
@@ -378,5 +369,15 @@ public class WelcomeActivity extends AppCompatActivity {
             tbVerifyPassword.setEnabled(state);
             tbVerifyPassword.setClickable(state);
         }
+    }
+
+    public void animateCog() {
+        loadingCog.setVisibility(View.VISIBLE);
+        anim.start();
+    }
+
+    private void stopCogAnimation() {
+        anim.cancel();
+        loadingCog.setVisibility(View.INVISIBLE);
     }
 }

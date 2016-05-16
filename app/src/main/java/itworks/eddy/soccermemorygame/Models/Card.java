@@ -4,8 +4,10 @@ import android.widget.ImageView;
 
 import itworks.eddy.soccermemorygame.CardOnclickListener;
 
-/**
- * Created by medve on 12/05/2016.
+/** Card - represents a card from the game, each card is assigned a view, resource and bonus points.
+ *  the view has a custom onclick listener that "binds" the card with the view, and calls the checkmatch
+ *  method upon selection.
+ *
  */
 public class Card {
     private ImageView view;

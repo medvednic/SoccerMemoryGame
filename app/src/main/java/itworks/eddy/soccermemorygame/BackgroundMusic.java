@@ -2,7 +2,6 @@ package itworks.eddy.soccermemorygame;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.util.Log;
 
 /** BackgroundMusic - handles MediaPlayer for background music
  *  static MediaPlayer variable is used so that it can be accessed from different activities/fragments,
@@ -20,7 +19,6 @@ public class BackgroundMusic {
         backgroundPlayer = MediaPlayer.create(context, R.raw.wayne_kinos_01_progressions_intro);
         backgroundPlayer.setLooping(true);
         setVolume(initialVolume);
-        Log.d("Background Player-->", "instantiated");
     }
 
     public static Boolean isAllowed(){
@@ -28,7 +26,6 @@ public class BackgroundMusic {
     }
 
     public static void setVolume(float volume){
-        Log.d("volume set to:", String.valueOf(volume));
         currentVolume = volume;
         backgroundPlayer.setVolume(volume, volume);
     }
@@ -44,18 +41,15 @@ public class BackgroundMusic {
 
     public static void changeState (Boolean musicOpt){
         allowMusic = musicOpt;
-        Log.d("allow music-->", String.valueOf(musicOpt));
     }
 
     public static void pause(){
-        Log.d("player is playing", String.valueOf(backgroundPlayer.isPlaying()));
         if (backgroundPlayer.isPlaying()){
             backgroundPlayer.pause();
         }
     }
 
     public static void start(){
-        Log.d("player is playing", String.valueOf(backgroundPlayer.isPlaying()));
         if (!backgroundPlayer.isPlaying()){
             Thread t = new Thread(new Runnable() {
                 @Override
@@ -68,15 +62,12 @@ public class BackgroundMusic {
     }
 
     public static void releasePlayer(){
-        Log.d("player is playing", String.valueOf(backgroundPlayer.isPlaying()));
         if (backgroundPlayer.isPlaying()){
-            Log.d("Releasing", "!");
             allowMusic = false;
             backgroundPlayer.stop();
             backgroundPlayer.reset();
             backgroundPlayer.release();
             backgroundPlayer = null;
-            Log.d("Released", "!");
         }
     }
 }

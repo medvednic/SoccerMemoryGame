@@ -3,15 +3,14 @@ package itworks.eddy.soccermemorygame.Views;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import itworks.eddy.soccermemorygame.R;
 
-/**
- * A simple {@link Fragment} subclass.
+/** AboutFragment - credits and about
+ *
  */
 public class AboutFragment extends Fragment {
 

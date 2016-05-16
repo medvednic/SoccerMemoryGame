@@ -1,7 +1,7 @@
 package itworks.eddy.soccermemorygame.Models;
 
-/**
- * Created by medve on 27/04/2016.
+/** User - represents a single player: has username and records for each level
+ *
  */
 public class User {
     private String username;

@@ -2,8 +2,8 @@ package itworks.eddy.soccermemorygame;
 
 import itworks.eddy.soccermemorygame.Models.User;
 
-/**
- * Created by medve on 16/05/2016.
+/** Session - holds a static user object for easier access to session data from other
+ *            activities and classes
  */
 public class Session {
     public static User currentUser;

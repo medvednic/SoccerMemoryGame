@@ -11,8 +11,8 @@ import java.util.List;
 
 import itworks.eddy.soccermemorygame.Models.User;
 
-/**
- * Created by medve on 16/05/2016.
+/** ScoresAdapter - Data adapter for RecyclerView functionality, also contains ViewHolder class.
+ *
  */
 public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ViewHolder> {
     private List<User> scores;
@@ -31,10 +31,12 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ScoresAdapter.ViewHolder holder, int position) {
+        //bind score data to view according to selected difficulty level
         String playerName = scores.get(position).getUsername();
         String playerScore = String.valueOf(scores.get(position).getLevelScore(level));
         holder.tvName.setText(playerName);
         holder.tvScore.setText(playerScore);
+        //highlight the score of the current player
         if (playerName.equals(Session.currentUser.getUsername())){
             holder.tvName.setTextColor(Color.YELLOW);
             holder.tvScore.setTextColor(Color.YELLOW);

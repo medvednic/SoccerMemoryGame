@@ -176,7 +176,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/CardsLayoutR4"
         android:layout_below="@+id/CardsLayoutR3"
-        android:layout_alignBottom="@+id/tvSteps"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
@@ -207,18 +206,6 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="1" />
     </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="0"
-        android:id="@+id/tvSteps"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>

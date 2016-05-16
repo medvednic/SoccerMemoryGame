@@ -36,8 +36,6 @@ public class LevelOneGame extends AppCompatActivity {
     TextView tvScore;
     @Bind(R.id.tvRecord)
     TextView tvRecord;
-    @Bind(R.id.tvSteps)
-    TextView tvSteps;
     List<ImageView> ivCards = new ArrayList<>();
     private int [] resources = {R.drawable.animal_duck, R.drawable.animal_owl, R.drawable.animal_wolf};
 

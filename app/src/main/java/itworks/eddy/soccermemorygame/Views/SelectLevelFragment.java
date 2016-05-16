@@ -18,8 +18,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import itworks.eddy.soccermemorygame.R;
 
-/**
- * A simple {@link Fragment} subclass.
+/** SelectLevelFragment - the user can select a game difficulty to play
+ *
  */
 public class SelectLevelFragment extends Fragment {
 

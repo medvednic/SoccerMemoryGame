@@ -3,8 +3,8 @@ package itworks.eddy.soccermemorygame.Models;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by medve on 15/05/2016.
+/** UsersList - holds list of users, used in JSON response deserialization
+ *
  */
 public class UsersList {
 
