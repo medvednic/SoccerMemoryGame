@@ -63,15 +63,18 @@ public class WelcomeActivity extends AppCompatActivity {
     Button btnCancel;
     @Bind(R.id.ivLogo)
     ImageView ivLogo;
-    @Bind(R.id.loadingCog)
-    ImageView loadingCog;
+    @Bind(R.id.loadingCog0)
+    ImageView loadingCog0;
+    @Bind(R.id.loadingCog1)
+    ImageView loadingCog1;
     private Boolean performRegistration = false;
     private String username;
     private String password;
     private String passwordVerify;
     private Boolean musicState;
     private float volume;
-    Animator anim;
+    Animator cog0anim;
+    Animator cog1anim;
     apiServices api;
     SharedPreferences appPreferences;
 
@@ -85,8 +88,10 @@ public class WelcomeActivity extends AppCompatActivity {
         tbUsername.addTextChangedListener(new NoSpaceTextWatcher(tbUsername));
         tbPassword.addTextChangedListener(new NoSpaceTextWatcher(tbPassword));
         tbVerifyPassword.addTextChangedListener(new NoSpaceTextWatcher(tbVerifyPassword));
-        anim = AnimatorInflater.loadAnimator(this, R.animator.rotation);
-        anim.setTarget(loadingCog);
+        cog0anim = AnimatorInflater.loadAnimator(this, R.animator.rotation);
+        cog0anim.setTarget(loadingCog0);
+        cog1anim = AnimatorInflater.loadAnimator(this, R.animator.back_rotation);
+        cog1anim.setTarget(loadingCog1);
         hideLoginOpts();
         apiServiceInit();
         if (!isNetworkAvailable()) {
@@ -216,7 +221,7 @@ public class WelcomeActivity extends AppCompatActivity {
         register.enqueue(new Callback<ServerResponse>() {
             @Override
             public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
-                stopCogAnimation();
+                stopCogs();
                 if (response.isSuccessful()) { //if user was added, start local session
                     Session.currentUser = new User(username, 0, 0, 0);
                     registerDialog();
@@ -245,7 +250,7 @@ public class WelcomeActivity extends AppCompatActivity {
         login.enqueue(new Callback<UsersList>() {
             @Override
             public void onResponse(Call<UsersList> call, Response<UsersList> response) {
-                stopCogAnimation();
+                stopCogs();
                 if (response.isSuccessful()) { //if server returned no error, start local session
                     Session.currentUser = response.body().getUser().get(0);
                     if (Session.currentUser != null) {
@@ -327,7 +332,7 @@ public class WelcomeActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.btnLogin:
                 if (verifyInput()) {
-                    animateCog();
+                    animateCogs();
                     btnLogin.setEnabled(false);
                     btnRegister.setEnabled(false);
                     SetEditText(false);
@@ -340,7 +345,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 btnCancel.setVisibility(View.VISIBLE);
                 tbVerifyPassword.setVisibility(View.VISIBLE);
                 if (verifyInput()) {
-                    animateCog();
+                    animateCogs();
                     btnRegister.setEnabled(false);
                     btnCancel.setEnabled(false);
                     SetEditText(false);
@@ -371,13 +376,17 @@ public class WelcomeActivity extends AppCompatActivity {
         }
     }
 
-    public void animateCog() {
-        loadingCog.setVisibility(View.VISIBLE);
-        anim.start();
+    public void animateCogs() {
+        loadingCog0.setVisibility(View.VISIBLE);
+        loadingCog1.setVisibility(View.VISIBLE);
+        cog0anim.start();
+        cog1anim.start();
     }
 
-    private void stopCogAnimation() {
-        anim.cancel();
-        loadingCog.setVisibility(View.INVISIBLE);
+    private void stopCogs() {
+        cog0anim.cancel();
+        cog1anim.cancel();
+        loadingCog0.setVisibility(View.INVISIBLE);
+        loadingCog1.setVisibility(View.INVISIBLE);
     }
 }

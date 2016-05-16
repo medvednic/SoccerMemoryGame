@@ -98,16 +98,39 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textBoxLayout"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentEnd="true"
+        android:id="@+id/cogsLayout">
 
         <ImageView
             android:layout_width="128dp"
             android:layout_height="128dp"
-            android:id="@+id/loadingCog"
+            android:id="@+id/loadingCog1"
             android:visibility="invisible"
             android:src="@drawable/cogwheel"
-            android:layout_centerInParent="true"
-            android:padding="20dp" />
+            android:rotation="5"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:layout_marginRight="69dp"
+            android:layout_marginEnd="69dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <ImageView
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:id="@+id/loadingCog0"
+            android:visibility="invisible"
+            android:src="@drawable/cogwheel"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:layout_marginLeft="47dp"
+            android:layout_marginStart="47dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="27dp" />
+
     </RelativeLayout>
 
 </RelativeLayout>
