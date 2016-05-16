@@ -73,13 +73,13 @@ public class ScoresFragment extends Fragment {
                 if (response.isSuccessful()) { //if score was updated
                     //corresponding list of users (scores) will be initialized according to desired level
                     if (level == 1){
-                        data0 = response.body().getUser();
+                        data0 = response.body().getUsers();
                         initRecyclerView(data0, level);
                     }else if (level == 2){
-                        data1 = response.body().getUser();
+                        data1 = response.body().getUsers();
                         initRecyclerView(data1, level);
                     }else {
-                        data2 = response.body().getUser();
+                        data2 = response.body().getUsers();
                         initRecyclerView(data2, level);
                     }
                     enableButtons();

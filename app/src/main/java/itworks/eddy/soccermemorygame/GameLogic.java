@@ -180,7 +180,7 @@ public class GameLogic {
             scoreView.setText(String.valueOf(score));
             Toast.makeText(context, "You have won! Press back", Toast.LENGTH_SHORT).show();
             //check if players record for the level was beaten, post it to the server if so.
-            if (score > Session.getCurrentLevelScore(level)){
+            if (score > Session.currentUser.getLevelScore(level)){
                 scoreView.setTextColor(Color.YELLOW);
                 updateRecord();
                 postScore();

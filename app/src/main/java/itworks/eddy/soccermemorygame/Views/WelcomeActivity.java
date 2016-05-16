@@ -252,7 +252,7 @@ public class WelcomeActivity extends AppCompatActivity {
             public void onResponse(Call<UsersList> call, Response<UsersList> response) {
                 stopCogs();
                 if (response.isSuccessful()) { //if server returned no error, start local session
-                    Session.currentUser = response.body().getUser().get(0);
+                    Session.currentUser = response.body().getUsers().get(0);
                     if (Session.currentUser != null) {
                         performLocalLogin();
                         launchMenu();
@@ -278,7 +278,6 @@ public class WelcomeActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     private void hashPassword() { //hash user provided password

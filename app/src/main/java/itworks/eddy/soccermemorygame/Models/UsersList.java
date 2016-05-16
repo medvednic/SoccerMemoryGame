@@ -8,17 +8,17 @@ import java.util.List;
  */
 public class UsersList {
 
-    private List<User> user = new ArrayList<User>();
+    private List<User> users = new ArrayList<User>();
 
-    public UsersList(List<User> user) {
-        this.user = user;
+    public UsersList(List<User> users) {
+        this.users = users;
     }
 
-    public void setUser(List<User> user) {
-        this.user = user;
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
-    public List<User> getUser() {
-        return user;
+    public List<User> getUsers() {
+        return users;
     }
 }

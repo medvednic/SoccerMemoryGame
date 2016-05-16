@@ -14,11 +14,9 @@ public interface apiServices {
 
     @POST("login")
     Call<UsersList> login(@Header("username") String username, @Header("password") String password);
-    //Call<ServerResponse> login(@Body User user); //old post form log in
 
     @POST("register")
     Call<ServerResponse> register(@Header("username") String username, @Header("password") String password);
-    //Call<User> register(@Body User user); //old post form based registration
 
     @POST("updatescore")
     Call<ServerResponse> updateScore(@Header("username") String username, @Header("score") int score,
@@ -26,6 +24,12 @@ public interface apiServices {
 
     @GET("getscores")
     Call<UsersList> getScores(@Header("level") int level);
+
+    @POST("resetscores")
+    Call<ServerResponse> resetScores(@Header("username") String username);
+
+    @POST("deleteuser")
+    Call<ServerResponse> deleteUser(@Header("username") String username, @Header("password") String password);
 
 }
 

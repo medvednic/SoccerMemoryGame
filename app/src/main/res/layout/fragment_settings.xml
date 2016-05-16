@@ -51,7 +51,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
         android:id="@+id/accountLayout">
 
@@ -60,18 +60,76 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Account Options"
-            android:id="@+id/textView2" />
+            android:id="@+id/textView2"
+            android:layout_gravity="center" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Restart Scores"
-            android:id="@+id/btRestartScore" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <Button
-            android:layout_width="wrap_content"
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Restart Scores"
+                android:id="@+id/btResetScores"
+                android:layout_gravity="center"
+                android:layout_weight="0.3" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Delete Account"
+                android:id="@+id/btDeleteUser"
+                android:layout_gravity="center"
+                android:layout_weight="0.3" />
+        </LinearLayout>
+
+        <EditText
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:text="Delete Account"
-            android:id="@+id/btDeleteUser" />
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/tbVerification"
+            android:visibility="invisible"
+            android:hint="Enter Password"
+            android:layout_gravity="center" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cancel"
+                    android:id="@+id/btCancel"
+                    android:visibility="invisible"
+                    android:layout_centerInParent="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Confirm"
+                    android:id="@+id/btnConfirm"
+                    android:visibility="invisible"
+                    android:layout_centerInParent="true" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 </FrameLayout>

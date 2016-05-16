@@ -55,7 +55,7 @@ public class User {
         return lvl2;
     }
 
-    public  int getLevelScore(int level){
+    public int getLevelScore(int level){
         if (level == 1){
             return lvl1;
         }
@@ -65,5 +65,15 @@ public class User {
         else {
             return lvl3;
         }
+    }
+
+    public boolean allZeros (){
+        return lvl1 == 0 && lvl2 == 0 && lvl3 == 0;
+    }
+
+    public void resetScores(){
+        lvl1 = 0;
+        lvl2 = 0;
+        lvl3 = 0;
     }
 }
