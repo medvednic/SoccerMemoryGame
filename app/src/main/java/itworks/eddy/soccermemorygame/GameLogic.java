@@ -229,7 +229,6 @@ public class GameLogic {
 
             }
         });
-
     }
 
     public static boolean isSelectedFull(){

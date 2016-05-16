@@ -151,8 +151,11 @@ public class MainMenuActivity extends AppCompatActivity
                     replace(R.id.contentLayout, new SelectLevelFragment()).
                     commit();
         } else if (id == R.id.nav_scores) {
-            // TODO: 01/05/2016 high scores fragment (Recycler view)
             toolbar.setTitle("High Scores");
+            getSupportFragmentManager().
+                    beginTransaction().
+                    replace(R.id.contentLayout, new ScoresFragment()).
+                    commit();
         } else if (id == R.id.nav_settings) {
             toolbar.setTitle("Settings");
             getSupportFragmentManager().

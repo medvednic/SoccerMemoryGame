@@ -3,6 +3,7 @@ package itworks.eddy.soccermemorygame.RESTaccess;
 import itworks.eddy.soccermemorygame.Models.ServerResponse;
 import itworks.eddy.soccermemorygame.Models.UsersList;
 import retrofit2.Call;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 
@@ -22,5 +23,9 @@ public interface apiServices {
     @POST("updatescore")
     Call<ServerResponse> updateScore(@Header("username") String username, @Header("score") int score,
                                      @Header("level") int level);
+
+    @GET("getscores")
+    Call<UsersList> getScores(@Header("level") int level);
+
 }
 
