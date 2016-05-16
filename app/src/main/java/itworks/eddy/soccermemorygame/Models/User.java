@@ -54,4 +54,16 @@ public class User {
     public Integer getLvl2() {
         return lvl2;
     }
+
+    public  int getLevelScore(int level){
+        if (level == 1){
+            return lvl1;
+        }
+        else if (level == 2){
+            return lvl2;
+        }
+        else {
+            return lvl3;
+        }
+    }
 }

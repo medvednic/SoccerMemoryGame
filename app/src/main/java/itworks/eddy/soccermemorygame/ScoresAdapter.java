@@ -1,5 +1,6 @@
 package itworks.eddy.soccermemorygame;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +16,11 @@ import itworks.eddy.soccermemorygame.Models.User;
  */
 public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ViewHolder> {
     private List<User> scores;
+    private int level;
 
-    public ScoresAdapter(List<User> scores) {
+    public ScoresAdapter(List<User> scores, int level) {
         this.scores = scores;
+        this.level = level;
     }
 
     @Override
@@ -28,8 +31,14 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ScoresAdapter.ViewHolder holder, int position) {
-        holder.tvName.setText(scores.get(position).getUsername());
-        holder.tvScore.setText(scores.get(position).getLvl1().toString());
+        String playerName = scores.get(position).getUsername();
+        String playerScore = String.valueOf(scores.get(position).getLevelScore(level));
+        holder.tvName.setText(playerName);
+        holder.tvScore.setText(playerScore);
+        if (playerName.equals(Session.currentUser.getUsername())){
+            holder.tvName.setTextColor(Color.YELLOW);
+            holder.tvScore.setTextColor(Color.YELLOW);
+        }
     }
 
     @Override

@@ -261,6 +261,10 @@ public class WelcomeActivity extends AppCompatActivity {
                         Log.d("wrong password", username);
                         Toast.makeText(getApplicationContext(), "Wrong password", Toast.LENGTH_SHORT).show();
                     }
+                    if (response.code() == 422) { //will return if username doesn't exists
+                        Log.d("Wrong username", username);
+                        Toast.makeText(getApplicationContext(), "Wrong username", Toast.LENGTH_SHORT).show();
+                    }
                     String errMsg = response.raw().message();
                     Log.d("Error", errMsg);
                     btnLogin.setEnabled(true);
