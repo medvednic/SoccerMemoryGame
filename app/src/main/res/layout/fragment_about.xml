@@ -16,15 +16,52 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Created by:"
-            android:id="@+id/textView4" />
+            android:id="@+id/tvAuthorTag"
+            android:paddingTop="10dp"
+            android:paddingBottom="5dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Eddy Medvednic"
-            android:id="@+id/textView5"
+            android:id="@+id/tvAuthor"
             android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Icons made by:"
+            android:id="@+id/tvIConsTAg"
+            android:paddingTop="10dp"
+            android:paddingBottom="5dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Dave Gandy, Madebyoliver and Alessio Atzeni from www.flaticon.com"
+            android:id="@+id/tvIcons"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Music"
+            android:id="@+id/yvMuiscTag"
+            android:paddingTop="10dp"
+            android:paddingBottom="5dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Wayne Kinos - Progressions"
+            android:id="@+id/TvMuisc"
+            android:layout_gravity="center" />
+
     </LinearLayout>
 
 </FrameLayout>

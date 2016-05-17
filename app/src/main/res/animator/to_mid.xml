@@ -3,5 +3,5 @@
         android:propertyName="rotationY"
         android:valueFrom="0"
         android:valueTo="-90"
-        android:duration="400"
+        android:duration="300"
         android:valueType="floatType"/>

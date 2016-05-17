@@ -2,10 +2,12 @@ package itworks.eddy.soccermemorygame.Views;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -146,13 +148,12 @@ public class SettingsFragment extends Fragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btResetScores:
-                btResetScores.setEnabled(false);
-                resetScores();
-                resetInPreferences();
+                showRestDialog();
                 break;
             case R.id.btDeleteUser:
                 showViews(View.VISIBLE);
                 btDeleteUser.setEnabled(false);
+                btResetScores.setEnabled(false);
                 break;
             case R.id.btnConfirm:
                 enableViews(false);
@@ -162,8 +163,33 @@ public class SettingsFragment extends Fragment {
                 tbVerification.setText("");
                 showViews(View.INVISIBLE);
                 btDeleteUser.setEnabled(true);
+                btResetScores.setEnabled(true);
                 break;
         }
+    }
+
+    private void showRestDialog() {
+        //display reset scores dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Are you sure?").setTitle("Reset scores");
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                btResetScores.setEnabled(true);
+            }
+        });
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //reset scores in database and locally
+                btResetScores.setEnabled(false);
+                resetScores();
+                resetInPreferences();
+            }
+        });
+        builder.setCancelable(false);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void apiServiceInit() { //init Retrofit
@@ -226,6 +252,7 @@ public class SettingsFragment extends Fragment {
                         Toast.makeText(getContext(), "Error: " + String.valueOf(response.code()), Toast.LENGTH_SHORT).show();
                     }
                     enableViews(true);
+                    btResetScores.setEnabled(true);
                 }
             }
 
