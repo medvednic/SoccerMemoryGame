@@ -48,6 +48,9 @@ public class SelectLevelFragment extends Fragment {
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 startActivity(intent);
+                IvLevel1.setEnabled(true);
+                IvLevel2.setEnabled(true);
+                IvLevel3.setEnabled(true);
             }
         });
         return view;
@@ -63,14 +66,20 @@ public class SelectLevelFragment extends Fragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.IvLevel1:
+                IvLevel2.setEnabled(false);
+                IvLevel3.setEnabled(false);
                 clickAnimation.setTarget(IvLevel1);
                 intent = new Intent(getActivity(), LevelOneGame.class);
                 break;
             case R.id.IvLevel2:
+                IvLevel1.setEnabled(false);
+                IvLevel3.setEnabled(false);
                 clickAnimation.setTarget(IvLevel2);
                 intent = new Intent(getActivity(), LevelTwoGame.class);
                 break;
             case R.id.IvLevel3:
+                IvLevel1.setEnabled(false);
+                IvLevel2.setEnabled(false);
                 clickAnimation.setTarget(IvLevel3);
                 intent = new Intent(getActivity(), LevelThreeGame.class);
                 break;
