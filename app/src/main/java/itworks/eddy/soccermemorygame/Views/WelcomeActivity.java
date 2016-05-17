@@ -97,10 +97,13 @@ public class WelcomeActivity extends AppCompatActivity {
         if (!isNetworkAvailable()) {
             networkDialog();
         }
-        if (!getLoggedInState()) {
-            showLoginOpts();
-        } else {
-            launchMenu();
+        else
+        {
+            if (!getLoggedInState()) {
+                showLoginOpts();
+            } else {
+                launchMenu();
+            }
         }
 
     }
